@@ -1,0 +1,31 @@
+{
+  "name": "forum-project-postgres",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danidre14/forum-project-postgres.git"
+  },
+  "keywords": [
+    "forum",
+    "postgres",
+    "knex"
+  ],
+  "author": "Danidre",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danidre14/forum-project-postgres/issues"
+  },
+  "homepage": "https://github.com/danidre14/forum-project-postgres#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.8",
+    "express": "^4.17.1",
+    "knex": "^0.20.9",
+    "pg": "^7.18.1",
+    "validator": "^12.2.0"
+  }
+}
