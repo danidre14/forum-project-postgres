@@ -2,4 +2,4 @@
 .env
 test
 migrations
-seed
+seeds
