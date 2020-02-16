@@ -17,8 +17,9 @@ router.get("/:id", async (req, res) => {
     if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
 
     const post = await Posts.read(id);
+    const comments = await Comments.getFromPost(id);
 
-    res.json(post ? post : statusMessage("Post not found", "error", 404));
+    res.json(post ? { ...post, comments } : statusMessage("Post not found", "error", 404));
 });
 
 router.post("/", async (req, res) => {

@@ -27,6 +27,12 @@ module.exports.Comments = {
     },
     delete(id) {
         return knex("comments").where({ id }).del();
+    },
+    getFromPost(id) {
+        return knex("comments").where("post_id", id);
+    },
+    getCountFromPost(id) {
+        return knex("comments").where("post_id", id).count().first();
     }
 }
 
