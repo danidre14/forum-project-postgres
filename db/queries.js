@@ -30,9 +30,6 @@ module.exports.Comments = {
     },
     getFromPost(id) {
         return knex("comments").where("post_id", id);
-    },
-    getCountFromPost(id) {
-        return knex("comments").where("post_id", id).count().first();
     }
 }
 
