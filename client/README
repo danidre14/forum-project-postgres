@@ -1,0 +1,151 @@
+1. npm init -- in terminal
+{  npm init  }
+[Create package.json file]
+
+2. npm i react react-dom react-dom-router webpack @babel/runtime -- in terminal
+{  npm i react react-dom react-dom-router webpack @babel/runtime  }
+[
+    Install React, DOM, and React Routers for Browsers
+    webpack: so all React code would be compiled/bundled into one file
+             needed in dependency for production
+    @babel/runtime: for using async await in production
+]
+
+3. npm i (--save-dev/-D) webpack-dev-server webpack-cli -- in terminal
+{  npm i --save-dev webpack-dev-server webpack-cli html-webpack-plugin  }
+[
+    webpack-dev-server: for live reloading etc during development
+    webpack-cli: allows you to run webpack commands (could be used for build script)
+    html-webpack-plugin: would generate build html file
+]
+
+[//4. npm i (--save-dev/-D) babel-core babel-preset-env babel-preset-react html-webpack-plugin//]
+4. npm i (--save-dev/-D) @babel/core @babel/preset-env @babel/preset-react @babel/plugin-transform-runtime -- in terminal
+{  npm i --save-dev @babel/core @babel/preset-env @babel/preset-react html-webpack-plugin  }
+[
+    babel is needed since react uses ES6 classes/import etc that needs to be transpiled to ES5-/browser friendly code (depending on which browser is being used)
+
+    [//babel-core//]
+    @babel/core: the core transpiler
+    [//babel-preset-env//]
+    @babel/preset-env: a babel plugin that takes the place of babel-preset-es2015;
+                       for compiling Javascript ES6 code down to ES5
+    [//babel-preset-react//]
+    @babel/preset-react: a babel plugin for compiling JSX and other stuff down to Javascript
+    @babel/plugin-transform-runtime: enables the re-use of Babel's injected helper code;
+                                     for using async await in development
+]
+
+5. npm i (--save-dev/-D) babel-loader style-loader css-loader -- in terminal
+{  npm i --save-dev babel-loader style-loader css-loader  }
+[
+    babel-loader: to compile JSX;
+                  the Webpack loader responsible for taking in the ES6 code and making it understandable by the browser of choice
+    style-loader: create style tags to place styles
+    css-loader: to create css files when required in app
+]
+
+6. Create webpack config file -- in root folder
+{  webpack.config.js  }
+/*
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+module.exports = {
+  //our React entry file
+  entry: "./src/index.js",
+
+  /*where you want compiled code to go;
+  would be just one bundled javascript file*/
+  output: {
+    path: path.join(__dirname, "/dist"),
+    filename: "index_bundle.js",
+    publicPath: "/" //all scripts would be served using this path
+  },
+  
+  devServer: {
+    // proxy default API requests to backend server (change to development server port
+    proxy: {
+      "/api": "http://localhost:5000"
+    },
+    // prevent refreshing pages in development from returning Cannot GET
+    historyApiFallback: true
+  },
+
+  //specifying loader
+  module: {
+    rules: [
+      {
+        //look for js/jsx files that we want babel to compile
+        test: /\.js$/,
+
+        exclude: /node_modules/, //so nothing happens to files inside the folder
+        use: {
+          loader: "babel-loader"
+        }
+      }, {
+        //look for css files that we want babel to compile
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      }
+    ]
+  },
+  
+
+  // add a custom index.html as the template
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/index.html"
+    })
+  ]
+};
+
+*/
+
+7. Create ./src/index.js file/folder -- in root folder
+{  src/index.js  }
+/*
+import React from "react";
+import ReactDOM from "react-dom";
+
+ReactDOM.render(<h1>Your React Application Boilerplate</h1>, document.getElementById("app"));
+*/
+
+8. Create template html file -- in src folder
+{  index.html  }
+/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My React App</title>
+</head>
+<body>
+    <!-- create container for react app -->
+    <div id="app"></div>
+</body>
+</html>
+*/
+
+9. Create .babelrc file -- in root folder
+{  .babelrc  }
+/*
+{
+    "presets": ["@babel/preset-env", "@babel/preset-react"],
+    "plugins": ["@babel/plugin-transform-runtime"]
+}
+*/
+[For babel-env and babel-react presets, and the babel-runtime plugin]
+
+10. Add scripts to run the dev server, and build it into the dist folder -- in package.json file
+/*
+    "start": "webpack-dev-server --mode development --open --hot"
+    //to run the dev server
+    //--open to automatically open when command is run
+    //--hot for hot reloading (when saving files etc, automatic reload)
+
+    "build": "webpack --mode production"
+    //to build for production and bring everything out into the dist folder specified
+    //webpack cli allows us to run webpack in that script there
+*/

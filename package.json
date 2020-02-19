@@ -24,6 +24,7 @@
   "homepage": "https://github.com/danidre14/forum-project-postgres#readme",
   "dependencies": {
     "bcrypt": "^3.0.8",
+    "concurrently": "^5.1.0",
     "express": "^4.17.1",
     "knex": "^0.20.9",
     "pg": "^7.18.1",
