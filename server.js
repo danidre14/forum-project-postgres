@@ -14,9 +14,9 @@ app.use("/api/v1/", apiRouter);
 // Serve static assets if in production
 if (process.env.NODE_ENV === "production") {
     // Set static folder
-    router.use(express.static("client/dist"));
+    app.use(express.static("client/dist"));
 
-    router.get("*", (req, res) => {
+    app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
     })
 }
