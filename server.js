@@ -10,6 +10,17 @@ app.use(express.json());
 
 app.use("/api/v1/", apiRouter);
 
+
+// Serve static assets if in production
+if (process.env.NODE_ENV === "production") {
+    // Set static folder
+    router.use(express.static("client/dist"));
+
+    router.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+    })
+}
+
 app.use("/", publicRouter);
 
 app.listen(process.env.PORT || 3000, () => console.log("Server started"))
