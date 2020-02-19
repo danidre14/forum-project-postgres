@@ -1,6 +1,7 @@
 const express = require("express");
 
 const app = express();
+const path = require("path");
 
 const publicRouter = require("./routes/index");
 const apiRouter = require("./api/index");
