@@ -5,7 +5,7 @@ module.exports.Posts = {
         return knex("posts").insert(post, "*");
     },
     read(id) {
-        return id ? knex("posts").where("id", id).first() : knex("posts");
+        return id ? knex("posts").where("id", id).first() : knex("posts").orderBy("id", "desc");
     },
     update(id, post) {
         return knex("posts").where("id", id).update(post, "*");
@@ -29,7 +29,7 @@ module.exports.Comments = {
         return knex("comments").where({ id }).del();
     },
     getFromPost(id) {
-        return knex("comments").where("post_id", id);
+        return knex("comments").where("post_id", id).orderBy("id", "desc");
     }
 }
 

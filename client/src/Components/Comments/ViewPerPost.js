@@ -1,39 +1,31 @@
 import React, { useState, useEffect } from "react";
+import makeRequest from "../Utils/makeRequest";
+import useErrors from "../Utils/useErrors";
 
 import Comment from "./Comment";
 import LoadingAnim from "../LoadingAnim";
 
 function CommentViewPerPost(props) {
-    const { post_id } = props;
+    const { post_id, fetchCommentsPerPost } = props;
 
     const [comments, setComments] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [Error, setError] = useErrors(false);
+
 
     useEffect(() => {
-        setTimeout(() => {
-            setComments([
-                {
-                    id: 1,
-                    body: "This is the first comment about lots of crazy shenannigans lol",
-                    username: "Bob"
-                },
-                {
-                    id: 2,
-                    body: "fghfgfyft",
-                    username: "Google"
-                },
-                {
-                    id: 3,
-                    body: "Lol taskk"
-                }
-            ]);
+        fetchCommentsPerPost(post_id, (data) => {
+            setComments(data);
             setIsLoading(false);
-        }, 5000)
+        }, (message) => {
+            setError(`Cannot view comments: ${message}`);
+        });
     }, []);
 
     const Comments = isLoading ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment key={comment.id} comment={{ ...comment, post_id }} />);
     return (
         <>
+            <Error />
             <p>Comments:</p>
             {Comments}
         </>

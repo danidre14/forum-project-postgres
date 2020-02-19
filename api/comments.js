@@ -14,7 +14,7 @@ const { Comments } = require("../db/queries");
 
 router.get("/:post_id", async (req, res) => {
     const post_id = req.params.post_id;
-    if (!Validator.isNumber(post_id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(post_id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     const comments = await Comments.getFromPost(post_id);
 
@@ -23,21 +23,22 @@ router.get("/:post_id", async (req, res) => {
 
 router.get("/view/:id", async (req, res) => {
     const id = req.params.id;
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     const comment = await Comments.read(id);
 
-    res.json(comment ? comment : statusMessage("Comment not found", "error", 404));
+    if (!comment) return res.status(404).json(statusMessage("Comment not found", "error", 404));
+    res.json(comment);
 });
 
 router.post("/:post_id", async (req, res) => {
     const post_id = req.params.post_id;
-    if (!Validator.isNumber(post_id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(post_id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
-    const { username, body, post_id } = req.body;
+    const { username, body } = req.body;
     const comment = validateComment({ username, body, post_id });
 
-    if (!comment) return res.json(statusMessage("Invalid comment", "error", 406));
+    if (!comment) return res.status(500).json(statusMessage("Invalid comment", "error", 500));
     const [newComment] = await Comments.create(comment);
 
     res.json(newComment);
@@ -46,12 +47,12 @@ router.post("/:post_id", async (req, res) => {
 router.put("/:id", async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     const { username, body, post_id } = req.body;
     const comment = validateComment({ username, body, post_id });
 
-    if (!comment) return res.json(statusMessage("Invalid comment", "error", 406));
+    if (!comment) return res.status(500).json(statusMessage("Invalid comment", "error", 500));
     const [newComment] = await Comments.update(id, comment);
 
     res.json(newComment);
@@ -60,7 +61,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     await Comments.delete(id);
 

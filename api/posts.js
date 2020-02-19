@@ -14,18 +14,19 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     const id = req.params.id;
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     const post = await Posts.read(id);
 
-    res.json(post ? post : statusMessage("Post not found", "error", 404));
+    if (!post) return res.status(404).json(statusMessage("Post not found", "error", 404));
+    res.json(post);
 });
 
 router.post("/", async (req, res) => {
     const { username, title, body } = req.body;
     const post = validatePost({ username, title, body });
 
-    if (!post) return res.json(statusMessage("Invalid post", "error", 406));
+    if (!post) return res.status(500).json(statusMessage("Invalid post", "error", 500));
     const [newPost] = await Posts.create(post);
 
     res.json(newPost);
@@ -34,12 +35,12 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     const { username, title, body } = req.body;
     const post = validatePost({ username, title, body });
 
-    if (!post) return res.json(statusMessage("Invalid post", "error", 406));
+    if (!post) return res.status(500).json(statusMessage("Invalid post", "error", 500));
     const [newPost] = await Posts.update(id, post);
 
     res.json(newPost);
@@ -48,7 +49,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", "error", 406));
+    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
     await Posts.delete(id);
 

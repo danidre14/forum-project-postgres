@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import useInputChange from "../States/useInputChange";
+import makeRequest from "../Utils/makeRequest";
+import useErrors from "../Utils/useErrors";
+import useInputChange from "../Utils/useInputChange";
+
+
+const Validator = { ...require("validator"), ...require("../../util/utilities") };
 
 function CommentCreate(props) {
     const [input, handleInputChange, setInput] = useInputChange({
@@ -9,12 +14,25 @@ function CommentCreate(props) {
     });
 
     const [isShowingCreate, setIsShowingCreate] = useState(false);
+    const [Error, setError] = useErrors(false);
 
     const { post_id } = props;
 
     const createComment = (e) => {
         e.preventDefault();
-        console.log({ username, body, post_id });
+        const comment = validateComment({ username, body, post_id });
+        if (!comment) return setError("Invalid comment");
+
+        // console.log(comment);
+        function postData() {
+            makeRequest([`/api/v1/comments/${post_id}`, "post"], comment, (data) => {
+                props.fetchPost();
+                showCommentCreate(false);
+            }, (message) => {
+                setError(`Cannot post comments: ${message}`);
+            })
+        }
+        postData();
     }
 
     const showCommentCreate = (val) => {
@@ -59,9 +77,22 @@ function CommentCreate(props) {
 
     return (
         <>
+            <Error />
             {commentJSX}
         </>
     )
+}
+
+const validateComment = ({ username, body, post_id }) => {
+    if (!Validator.isNumber(post_id)) return false;
+    const validBody = Validator.isString(body) && Validator.isLength(body, { min: 1, max: 1024 });
+    const comment = {}
+    if (validBody) {
+        comment.body = body;
+        comment.post_id = post_id;
+    } else return false;
+    if (username && Validator.isLength(username, { min: 1, max: 64 })) comment.username = username;
+    return comment;
 }
 
 export default CommentCreate;

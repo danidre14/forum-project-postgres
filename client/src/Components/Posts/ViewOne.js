@@ -1,41 +1,60 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import makeRequest from "../Utils/makeRequest";
+import useErrors from "../Utils/useErrors";
 
 import Post from "./Post";
 import CreateComment from "../Comments/Create";
-import CommentViewPerPost from "../Comments/ViewPerPost";
+// import CommentViewPerPost from "../Comments/ViewPerPost";
+import Comment from "../Comments/Comment";
 import LoadingAnim from "../LoadingAnim";
 
 function PostViewOne() {
     const { id } = useParams();
+    const post_id = id;
 
     const [post, setPost] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
+    const [comments, setComments] = useState([]);
+    const [isLoadingPost, setIsLoadingPost] = useState(true);
+    const [isLoadingComments, setIsLoadingComments] = useState(true);
+    const [Error, setError] = useErrors(false);
 
+    function fetchPost() {
+        makeRequest([`/api/v1/posts/${id}`, "get"], {}, (data) => {
+            setPost(data);
+            setIsLoadingPost(false);
+            fetchCommentsPerPost();
+        }, (message) => {
+            setError(`Cannot view post: ${message}`);
+        })
+    }
+    function fetchCommentsPerPost() {
+        makeRequest([`/api/v1/comments/${post_id}`, "get"], {}, (data) => {
+            setComments(data);
+            setIsLoadingComments(false);
+        }, (message) => {
+            setError(`Cannot view comments: ${message}`);
+        });
+    }
     useEffect(() => {
-        setTimeout(() => {
-            setPost({
-                id: id,
-                title: "Post 1",
-                body: "This is the first post about lots of crazy shenannigans lol",
-                username: "Bob",
-                comment_count: 0
-            });
-            setIsLoading(false);
-        }, 5000)
+        fetchPost();
     }, []);
 
-    const Post_ = isLoading ? <LoadingAnim value="Posts" /> :
+    const thePost = (isLoadingPost ? <LoadingAnim value="Posts" /> :
         <>
             <Post post={post} canView={false} />
             <hr />
-            <CreateComment post_id={id} />
-            <hr />
-            <CommentViewPerPost post_id={id} />
-        </>;
+            <CreateComment post_id={id} fetchPost={fetchPost} />
+        </>);
+
+    const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment key={comment.id} comment={{ ...comment, post_id }} />);
     return (
         <>
-            {Post_}
+            <Error />
+            {thePost}
+            <hr />
+            <p>Comments:</p>
+            {Comments}
         </>
     )
 }
