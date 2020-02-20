@@ -22,6 +22,7 @@ function App() {
                 <Route path="/posts/view" component={PostsView} />
                 <Route path="/" component={RedirectHomePage} />
             </Switch>
+
         </Router>
     );
 }
