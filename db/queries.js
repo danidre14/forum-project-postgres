@@ -5,7 +5,7 @@ module.exports.Posts = {
         return knex("posts").insert(post, "*");
     },
     read(id) {
-        return id ? knex("posts").where("id", id).first() : knex("posts").orderBy("id", "desc");
+        return id ? knex("posts").where("id", id).first() : knex("posts").orderBy("id", "desc").limit(8);
     },
     update(id, post) {
         return knex("posts").where("id", id).update(post, "*");
