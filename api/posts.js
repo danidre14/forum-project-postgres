@@ -22,7 +22,8 @@ router.get("/:id", async (req, res) => {
     res.json(post);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
+    next();
     const { username, title, body } = req.body;
     const post = validatePost({ username, title, body });
 
