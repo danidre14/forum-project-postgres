@@ -32,7 +32,8 @@ router.post("/", async (req, res) => {
     res.json(newPost);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
+    next();
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
@@ -46,7 +47,8 @@ router.put("/:id", async (req, res) => {
     res.json(newPost);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
+    next();
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));

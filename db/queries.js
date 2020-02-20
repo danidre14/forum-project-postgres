@@ -29,7 +29,7 @@ module.exports.Comments = {
         return knex("comments").where({ id }).del();
     },
     getFromPost(id) {
-        return knex("comments").where("post_id", id).orderBy("id", "desc");
+        return knex("comments").where("post_id", id).orderBy("id", "desc").limit(8);
     }
 }
 
