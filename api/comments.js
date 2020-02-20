@@ -31,7 +31,9 @@ router.get("/view/:id", async (req, res) => {
     res.json(comment);
 });
 
-router.post("/:post_id", async (req, res) => {
+router.post("/:post_id", async (req, res, next) => {
+    next();
+
     const post_id = req.params.post_id;
     if (!Validator.isNumber(post_id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
 
