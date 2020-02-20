@@ -11,7 +11,7 @@
     "devServer": "nodemon server.js",
     "devClient": "cd client && npm start",
     "devStart": "concurrently --kill-others-on-fail \"npm run devServer\" \"npm run devClient\"",
-    "heroku-postbuild": "cd client && NPM_CONFIG_PRODUCTION=false npm i --only=dev && NPM_CONFIG_PRODUCTION=true npm i && npm run buildd"
+    "heroku-postbuild": "cd client && NPM_CONFIG_PRODUCTION=false npm i --only=dev && NPM_CONFIG_PRODUCTION=true npm i && npm run build"
   },
   "repository": {
     "type": "git",
