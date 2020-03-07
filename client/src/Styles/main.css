@@ -1,0 +1,12 @@
+pre {
+    font-family: inherit;
+    font-size: 1em;
+}
+
+.mb-10 {
+    margin-bottom: 5rem!important;
+}
+
+.mt-10 {
+    margin-top: 5rem!important;
+}

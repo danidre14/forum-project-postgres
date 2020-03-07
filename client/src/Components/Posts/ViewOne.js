@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
 import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors";
 
 import Post from "./Post";
 import CreateComment from "../Comments/Create";
-// import CommentViewPerPost from "../Comments/ViewPerPost";
 import Comment from "../Comments/Comment";
 import LoadingAnim from "../LoadingAnim";
 
@@ -53,7 +53,6 @@ function PostViewOne() {
             <Error />
             {thePost}
             <hr />
-            <p>Comments:</p>
             {Comments}
         </>
     )

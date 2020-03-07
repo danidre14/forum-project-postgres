@@ -10,7 +10,7 @@ function Post(props) {
             <p>id: {id}</p>
             <h3>title: {title}</h3>
             <h3>username: {username || "anonymous"}</h3>
-            <p>body: {body}</p>
+            <div>body: <pre>{body}</pre> </div>
             <p>comments: {comment_count || 0}</p>
             {viewBtn}
         </>

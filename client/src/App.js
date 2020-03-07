@@ -1,6 +1,7 @@
 import React from "react";
 
 import { BrowserRouter as Router, Route, Link, Switch, Redirect } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 import PostsView from "./Components/Posts/View";
 import PostsViewOne from "./Components/Posts/ViewOne";
@@ -16,13 +17,16 @@ function App() {
         <Router>
             <Header />
 
-            <Switch>
-                <Route path="/posts/create" component={PostsCreate} />
-                <Route path="/posts/view/:id" component={PostsViewOne} />
-                <Route path="/posts/view" component={PostsView} />
-                <Route path="/" component={RedirectHomePage} />
-            </Switch>
-
+            <div className="mt-10">
+                <Container>
+                    <Switch>
+                        <Route path="/posts/create" component={PostsCreate} />
+                        <Route path="/posts/view/:id" component={PostsViewOne} />
+                        <Route path="/posts/view" component={PostsView} />
+                        <Route path="/" component={RedirectHomePage} />
+                    </Switch>
+                </Container>
+            </div>
         </Router>
     );
 }

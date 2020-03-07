@@ -31,8 +31,7 @@ router.get("/view/:id", async (req, res) => {
     res.json(comment);
 });
 
-router.post("/:post_id", async (req, res, next) => {
-    return next();
+router.post("/:post_id", tryGoNext, async (req, res, next) => {
 
     const post_id = req.params.post_id;
     if (!Validator.isNumber(post_id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
@@ -46,8 +45,8 @@ router.post("/:post_id", async (req, res, next) => {
     res.json(newComment);
 });
 
-router.put("/:id", async (req, res, next) => {
-    return next();
+router.put("/:id", tryGoNext, async (req, res, next) => {
+
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
@@ -61,8 +60,8 @@ router.put("/:id", async (req, res, next) => {
     res.json(newComment);
 });
 
-router.delete("/:id", async (req, res, next) => {
-    return next();
+router.delete("/:id", tryGoNext, async (req, res, next) => {
+
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
@@ -82,6 +81,11 @@ const validateComment = ({ username, body, post_id }) => {
     } else return false;
     if (username && Validator.isLength(username, { min: 1, max: 64 })) comment.username = username;
     return comment;
+}
+
+
+function tryGoNext(req, res, next) {
+    if (process.env.NODE_ENV !== "production") return next();
 }
 
 module.exports = router;

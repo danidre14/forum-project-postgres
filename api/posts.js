@@ -22,8 +22,7 @@ router.get("/:id", async (req, res) => {
     res.json(post);
 });
 
-router.post("/", async (req, res, next) => {
-    return next();
+router.post("/", tryGoNext, async (req, res, next) => {
     const { username, title, body } = req.body;
     const post = validatePost({ username, title, body });
 
@@ -33,8 +32,7 @@ router.post("/", async (req, res, next) => {
     res.json(newPost);
 });
 
-router.put("/:id", async (req, res, next) => {
-    return next();
+router.put("/:id", tryGoNext, async (req, res, next) => {
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
@@ -48,8 +46,7 @@ router.put("/:id", async (req, res, next) => {
     res.json(newPost);
 });
 
-router.delete("/:id", async (req, res, next) => {
-    return next();
+router.delete("/:id", tryGoNext, async (req, res, next) => {
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", "error", 500));
@@ -69,6 +66,10 @@ const validatePost = ({ username, title, body }) => {
     } else return false;
     if (username && Validator.isLength(username, { min: 1, max: 64 })) post.username = username;
     return post;
+}
+
+function tryGoNext(req, res, next) {
+    if (process.env.NODE_ENV !== "production") return next();
 }
 
 module.exports = router;

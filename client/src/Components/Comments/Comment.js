@@ -8,7 +8,7 @@ function Comment(props) {
             <p>Comment</p>
             <p>id: {id}</p>
             <h3>username: {username || "anonymous"}</h3>
-            <p>body: {body}</p>
+            <div>body: <pre>{body}</pre> </div>
             <p>Post ID: {post_id}</p>
         </>
     )

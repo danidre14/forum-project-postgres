@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors";
@@ -6,6 +6,8 @@ import useInputChange from "../Utils/useInputChange";
 
 
 const Validator = { ...require("validator"), ...require("../../util/utilities") };
+
+import { Form, Button, Col, Row, InputGroup, ButtonToolbar } from "react-bootstrap";
 
 function CommentCreate(props) {
     const [input, handleInputChange, setInput] = useInputChange({
@@ -28,6 +30,7 @@ function CommentCreate(props) {
             makeRequest([`/api/v1/comments/${post_id}`, "post"], comment, (data) => {
                 props.fetchPost();
                 showCommentCreate(false);
+                setError(false);
             }, (message) => {
                 setError(`Cannot post comments: ${message}`);
             })
@@ -49,38 +52,61 @@ function CommentCreate(props) {
 
     const { username, body } = input;
 
-    const commentJSX = isShowingCreate ?
-        <>
-            <h3>Create Comment</h3>
-            <form>
-                <label>Username:</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={username}
-                    onChange={handleInputChange}
-                />
+    if (isShowingCreate) {
+        return (
+            <>
+                <Error />
 
-                <label>Body:</label>
-                <input
-                    type="text"
-                    name="body"
-                    value={body}
-                    onChange={handleInputChange}
-                />
-                <br />
-                <input type="submit" onClick={createComment} value={"Create"} />
-            </form>
-            <button onClick={() => showCommentCreate(false)}>Cancel</button>
-        </> :
-        (<button onClick={() => showCommentCreate(true)}>Create Comment</button>)
+                <h3 className="mb-4">Create Comment</h3>
+                <Form>
+                    <Form.Group as={Row} controlId="formBasicUsername">
+                        <Form.Label column sm="2">Username</Form.Label>
+                        <Col sm="10">
 
-    return (
-        <>
-            <Error />
-            {commentJSX}
-        </>
-    )
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend >
+                                    <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control
+                                    size="sm"
+                                    type="text"
+                                    placeholder="Username"
+                                    name="username"
+                                    value={username}
+                                    onChange={handleInputChange}
+                                />
+                            </InputGroup>
+                        </Col>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicBody">
+                        <Form.Control
+                            as="textarea"
+                            rows="4"
+                            placeholder="Write comment"
+                            name="body"
+                            value={body}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+                    <ButtonToolbar>
+                        <Button variant="info" type="submit" onClick={createComment} className="mr-3">
+                            Comment
+                            </Button>
+                        <Button variant="info" onClick={() => { showCommentCreate(false); setError(false) }}>
+                            Cancel
+                            </Button>
+                    </ButtonToolbar>
+                </Form>
+
+            </>
+        )
+    } else {
+        return (
+            <>
+                <Error />
+                <Button variant="info" onClick={() => showCommentCreate(true)}>Comment</Button>
+            </>)
+    }
 }
 
 const validateComment = ({ username, body, post_id }) => {

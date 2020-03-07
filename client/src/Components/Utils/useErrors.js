@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 
+import { Alert } from "react-bootstrap";
+
 function useErrors(initialErrorValue) {
     const [error, setError] = useState(initialErrorValue);
 
     function Error() {
-        const Error = !error ? <React.Fragment></React.Fragment> : <div>
-            <h1>Error</h1>
-            <p>An error has occurred: {error === true ? "Unknown" : error}</p>
-            <button onClick={() => setError(false)}>Close</button>
-        </div>
-
+        const errMsg = `An error has occurred: ${error === true ? "Unknown" : error}`;
         return (
-            <>{Error}</>
+            <>{error &&
+
+                <Alert variant="danger" onClose={() => setError(false)} dismissible>
+                    <Alert.Heading>Error!</Alert.Heading>
+                    <p>
+                        {errMsg}
+                    </p>
+                </Alert>
+            }</>
         )
     }
 
