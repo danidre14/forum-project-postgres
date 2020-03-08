@@ -81,7 +81,7 @@ function CommentCreate(props) {
                         <Form.Control
                             as="textarea"
                             rows="4"
-                            placeholder="What's are your thought?"
+                            placeholder="What are your thoughts?"
                             name="body"
                             value={body}
                             onChange={handleInputChange}

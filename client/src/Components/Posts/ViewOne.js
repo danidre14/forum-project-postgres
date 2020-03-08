@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+
+import { Breadcrumb } from "react-bootstrap";
 
 import makeRequest from "../Utils/makeRequest.jsx";
 import useErrors from "../Utils/useErrors.jsx";
@@ -14,6 +16,7 @@ function PostViewOne() {
     const post_id = id;
 
     const [post, setPost] = useState({});
+    const [postTitle, setPostTitle] = useState("");
     const [comments, setComments] = useState([]);
     const [isLoadingPost, setIsLoadingPost] = useState(true);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
@@ -22,6 +25,7 @@ function PostViewOne() {
     function fetchPost() {
         makeRequest([`/api/v1/posts/${id}`, "get"], {}, (data) => {
             setPost(data);
+            setPostTitle(data.title);
             setIsLoadingPost(false);
             fetchCommentsPerPost();
         }, (message) => {
@@ -51,9 +55,18 @@ function PostViewOne() {
     const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment key={comment.id} comment={{ ...comment, post_id }} />);
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Item as={Link} to="/">
+                    <p className="text-info">Home</p>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item as={Link} to="/posts/view">
+                    <p className="text-info">Posts</p>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>{postTitle}</Breadcrumb.Item>
+            </Breadcrumb>
             <Error />
             {thePost}
-            {Comments}
+            {!isLoadingPost && Comments}
         </>
     )
 }
