@@ -56,11 +56,11 @@ function PostViewOne() {
     return (
         <>
             <Breadcrumb>
-                <Breadcrumb.Item as={Link} to="/">
-                    <p className="text-info">Home</p>
+                <Breadcrumb.Item>
+                    <Link to="/" className="text-info">Home</Link>
                 </Breadcrumb.Item>
-                <Breadcrumb.Item as={Link} to="/posts/view">
-                    <p className="text-info">Posts</p>
+                <Breadcrumb.Item>
+                    <Link to="/posts/view" className="text-info">Posts</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>{postTitle}</Breadcrumb.Item>
             </Breadcrumb>
