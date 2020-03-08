@@ -39,8 +39,8 @@ function PostCreate(props) {
             <Error />
             <Form>
                 <Form.Group as={Row} controlId="formBasicUsername">
-                    <Form.Label column sm="2">Username</Form.Label>
-                    <Col sm="10">
+                    <Form.Label column sm="auto">Username</Form.Label>
+                    <Col>
 
                         <InputGroup size="sm">
                             <InputGroup.Prepend >
@@ -58,7 +58,7 @@ function PostCreate(props) {
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formBasicTitle">
-                    <Form.Label column sm="2">Title</Form.Label>
+                    <Form.Label column sm="auto">Title</Form.Label>
                     <Col>
                         <Form.Control
                             size="sm"
@@ -74,14 +74,14 @@ function PostCreate(props) {
                     <Form.Control
                         as="textarea"
                         rows="12"
-                        placeholder="Create post"
+                        placeholder="What's on your mind?"
                         name="body"
                         value={body}
                         onChange={handleInputChange}
                     />
                 </Form.Group>
                 <Button variant="info" type="submit" onClick={createPost}>
-                    Create
+                    Post
                     </Button>
             </Form>
         </>

@@ -42,9 +42,10 @@ function PostViewOne() {
 
     const thePost = (isLoadingPost ? <LoadingAnim value="Posts" /> :
         <>
-            <Post post={post} canView={false} />
-            <hr />
-            <CreateComment post_id={id} fetchPost={fetchPost} />
+            <Post post={post} canView={false}>
+                <hr />
+                <CreateComment post_id={id} fetchPost={fetchPost} />
+            </Post>
         </>);
 
     const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment key={comment.id} comment={{ ...comment, post_id }} />);
@@ -52,7 +53,6 @@ function PostViewOne() {
         <>
             <Error />
             {thePost}
-            <hr />
             {Comments}
         </>
     )

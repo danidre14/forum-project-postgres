@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import makeRequest from "../Utils/makeRequest.jsx";
 import useErrors from "../Utils/useErrors.jsx";
 
+import DivLink from "../Utils/DivLink.jsx";
+
 import Post from "./Post";
 import LoadingAnim from "../LoadingAnim";
 
@@ -22,7 +24,10 @@ function PostView() {
         getData();
     }, []);
 
-    const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post => <Post key={post.id} post={post} canView={true} />);
+    const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
+        <DivLink to={`/posts/view/${post.id}`}>
+            <Post key={post.id} post={post} canView={true} />
+        </DivLink>);
     return (
         <>
             <Error />

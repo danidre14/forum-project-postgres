@@ -12,10 +12,10 @@ function Comment(props) {
         <>
             <Card className="mb-3">
                 <Card.Body>
-                    <Card.Subtitle className="mb-2 text-muted">
+                    <Card.Subtitle className="mb-3">
                         <Row>
-                            <Col>{username || "anonymous"}</Col>
-                            <Col xs="auto">x minutes ago</Col>
+                            <Col className="text-info">{username || "anonymous"}</Col>
+                            <Col xs="auto" className="text-muted">x minutes ago</Col>
                         </Row>
                     </Card.Subtitle>
                     <div>

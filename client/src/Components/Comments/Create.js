@@ -25,7 +25,6 @@ function CommentCreate(props) {
         const comment = validateComment({ username, body, post_id });
         if (!comment) return setError("Invalid comment");
 
-        // console.log(comment);
         function postData() {
             makeRequest([`/api/v1/comments/${post_id}`, "post"], comment, (data) => {
                 props.fetchPost();
@@ -57,11 +56,11 @@ function CommentCreate(props) {
             <>
                 <Error />
 
-                <h3 className="mb-4">Create Comment</h3>
+                <p className="mb-3 text-muted">Create Comment</p>
                 <Form>
                     <Form.Group as={Row} controlId="formBasicUsername">
-                        <Form.Label column sm="2">Username</Form.Label>
-                        <Col sm="10">
+                        <Form.Label column sm="auto">Username</Form.Label>
+                        <Col>
 
                             <InputGroup size="sm">
                                 <InputGroup.Prepend >
@@ -82,7 +81,7 @@ function CommentCreate(props) {
                         <Form.Control
                             as="textarea"
                             rows="4"
-                            placeholder="Write comment"
+                            placeholder="What's are your thought?"
                             name="body"
                             value={body}
                             onChange={handleInputChange}
