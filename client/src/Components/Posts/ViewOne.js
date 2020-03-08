@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import makeRequest from "../Utils/makeRequest.jsx";
+import useErrors from "../Utils/useErrors.jsx";
 
 import Post from "./Post";
 import CreateComment from "../Comments/Create";

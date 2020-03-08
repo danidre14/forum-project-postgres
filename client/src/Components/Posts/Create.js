@@ -1,8 +1,8 @@
 import React from "react";
 
-import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
-import useInputChange from "../Utils/useInputChange";
+import makeRequest from "../Utils/makeRequest.jsx";
+import useErrors from "../Utils/useErrors.jsx";
+import useInputChange from "../Utils/useInputChange.jsx";
 
 
 const Validator = { ...require("validator"), ...require("../../util/utilities") };

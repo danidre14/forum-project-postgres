@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import makeRequest from "../Utils/makeRequest.jsx";
+import useErrors from "../Utils/useErrors.jsx";
 
 import Post from "./Post";
 import LoadingAnim from "../LoadingAnim";
