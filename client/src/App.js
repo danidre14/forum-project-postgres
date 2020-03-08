@@ -17,7 +17,7 @@ function App() {
         <Router>
             <Header />
 
-            <div className="mt-10">
+            <div className="pt-10 pb-3 bg-ghostwhite">
                 <Container>
                     <Switch>
                         <Route path="/posts/create" component={PostsCreate} />

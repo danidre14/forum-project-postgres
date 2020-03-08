@@ -11,6 +11,26 @@ pre {
     margin-top: 5rem!important;
 }
 
+.pb-10 {
+    padding-bottom: 5rem!important;
+}
+
+.pt-10 {
+    padding-top: 5rem!important;
+}
+
+.bg-ghostwhite {
+    background-color: ghostwhite;
+}
+
 .breadcrumb {
     background: #0000;
+}
+
+.navbar {
+    justify-content: initial;
+}
+
+.no-border {
+    border: none;
 }

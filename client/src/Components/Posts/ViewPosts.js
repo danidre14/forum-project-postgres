@@ -29,7 +29,7 @@ function PostView() {
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
         <DivLink to={`/posts/view/${post.id}`}>
-            <Post key={post.id} post={post} canView={true} />
+            <Post classNames={`no-border shadow-sm`} key={post.id} post={post} canView={true} />
         </DivLink>);
     return (
         <>

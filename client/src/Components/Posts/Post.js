@@ -10,7 +10,7 @@ function Post(props) {
     const commentsText = (comment_count || 0) + (comment_count === 1 ? " comment" : " comments");
     return (
         <>
-            <Card className="mb-3">
+            <Card className={`mb-3 ${props.classNames}`}>
                 <Card.Body>
                     <Card.Title as="h3">{title}</Card.Title>
                     <Card.Subtitle className="mb-4 text-muted small">

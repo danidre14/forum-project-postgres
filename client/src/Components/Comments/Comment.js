@@ -10,7 +10,7 @@ function Comment(props) {
 
     return (
         <>
-            <Card className="mb-3">
+            <Card className={`mb-3 ${props.classNames}`}>
                 <Card.Body>
                     <Card.Subtitle className="mb-3">
                         <Row>

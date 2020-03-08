@@ -52,7 +52,7 @@ function PostViewOne() {
             </Post>
         </>);
 
-    const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment key={comment.id} comment={{ ...comment, post_id }} />);
+    const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment classNames={`no-border shadow-sm`} key={comment.id} comment={{ ...comment, post_id }} />);
     return (
         <>
             <Breadcrumb>
