@@ -46,7 +46,7 @@ function PostViewOne() {
 
     const thePost = (isLoadingPost ? <LoadingAnim value="Posts" /> :
         <>
-            <Post post={post} canView={false}>
+            <Post classNames={`no-border shadow-sm`} post={post} canView={false}>
                 <hr />
                 <CreateComment post_id={id} fetchPost={fetchPost} />
             </Post>

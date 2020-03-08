@@ -46,7 +46,7 @@ function PostCreate(props) {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>Create</Breadcrumb.Item>
             </Breadcrumb>
-            <Card className="mb-3">
+            <Card className="mb-3 no-border shadow-sm">
                 <Card.Body>
                     <Error />
                     <Form>
