@@ -7,6 +7,9 @@ import DivLink from "../Utils/DivLink.jsx";
 import Post from "./Post";
 import LoadingAnim from "../LoadingAnim";
 
+import { Link } from "react-router-dom";
+import { Breadcrumb } from "react-bootstrap";
+
 function PostView() {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +33,12 @@ function PostView() {
         </DivLink>);
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Item>
+                    <Link to="/" className="text-info">Home</Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>Posts</Breadcrumb.Item>
+            </Breadcrumb>
             <Error />
             {Posts}
         </>
