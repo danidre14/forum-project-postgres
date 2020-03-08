@@ -36,54 +36,58 @@ function PostCreate(props) {
 
     return (
         <>
-            <Error />
-            <Form>
-                <Form.Group as={Row} controlId="formBasicUsername">
-                    <Form.Label column sm="auto">Username</Form.Label>
-                    <Col>
+            <Card className="mb-3">
+                <Card.Body>
+                    <Error />
+                    <Form>
+                        <Form.Group as={Row} controlId="formBasicUsername">
+                            <Form.Label column sm="auto">Username</Form.Label>
+                            <Col>
 
-                        <InputGroup size="sm">
-                            <InputGroup.Prepend >
-                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                            </InputGroup.Prepend>
+                                <InputGroup size="sm">
+                                    <InputGroup.Prepend >
+                                        <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control
+                                        size="sm"
+                                        type="text"
+                                        placeholder="Username"
+                                        name="username"
+                                        value={username}
+                                        onChange={handleInputChange}
+                                    />
+                                </InputGroup>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formBasicTitle">
+                            <Form.Label column sm="auto">Title</Form.Label>
+                            <Col>
+                                <Form.Control
+                                    size="sm"
+                                    type="text"
+                                    placeholder="Title"
+                                    name="title"
+                                    value={title}
+                                    onChange={handleInputChange}
+                                />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group controlId="formBasicBody">
                             <Form.Control
-                                size="sm"
-                                type="text"
-                                placeholder="Username"
-                                name="username"
-                                value={username}
+                                as="textarea"
+                                rows="12"
+                                placeholder="What's on your mind?"
+                                name="body"
+                                value={body}
                                 onChange={handleInputChange}
                             />
-                        </InputGroup>
-                    </Col>
-                </Form.Group>
-                <Form.Group as={Row} controlId="formBasicTitle">
-                    <Form.Label column sm="auto">Title</Form.Label>
-                    <Col>
-                        <Form.Control
-                            size="sm"
-                            type="text"
-                            placeholder="Title"
-                            name="title"
-                            value={title}
-                            onChange={handleInputChange}
-                        />
-                    </Col>
-                </Form.Group>
-                <Form.Group controlId="formBasicBody">
-                    <Form.Control
-                        as="textarea"
-                        rows="12"
-                        placeholder="What's on your mind?"
-                        name="body"
-                        value={body}
-                        onChange={handleInputChange}
-                    />
-                </Form.Group>
-                <Button variant="info" type="submit" onClick={createPost}>
-                    Post
+                        </Form.Group>
+                        <Button variant="info" type="submit" onClick={createPost}>
+                            Post
                     </Button>
-            </Form>
+                    </Form>
+                </Card.Body>
+            </Card>
         </>
     )
 }
