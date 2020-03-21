@@ -1,0 +1,22 @@
+/**********
+ Footer at the bottom of the page even if the main content is small
+**********/
+
+/* using Flexbox (my preferred method) 
+ Set the body to be 100% of the viewport height and set the main content to grow to the biggest it can be (while still leaving the header and footer to be big enough to display their content) */
+
+.body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+.body>main {
+    flex-grow: 9999;
+}
+
+.body>footer {
+    margin-top: auto;
+}

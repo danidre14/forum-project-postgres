@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import makeRequest from "../Utils/makeRequest.jsx";
+import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors.jsx";
 
 import DivLink from "../Utils/DivLink.jsx";
@@ -28,17 +28,17 @@ function PostView() {
     }, []);
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
-        <DivLink to={`/posts/view/${post.id}`}>
+        <DivLink key={post.id} to={`/posts/view/${post.id}`}>
             <Post classNames={`no-border shadow-sm`} key={post.id} post={post} canView={true} />
         </DivLink>);
     return (
         <>
-            <Breadcrumb>
+            {/* <Breadcrumb>
                 <Breadcrumb.Item>
                     <Link to="/" className="text-info">Home</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>Posts</Breadcrumb.Item>
-            </Breadcrumb>
+            </Breadcrumb> */}
             <Error />
             {Posts}
         </>

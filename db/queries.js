@@ -1,35 +1,57 @@
 const knex = require("./knex");
 
-module.exports.Posts = {
+module.exports.Postss = {
     create(post) {
         return knex("posts").insert(post, "*");
     },
-    read(id) {
-        return id ? knex("posts").where("id", id).first() : knex("posts").orderBy("id", "desc");
+    read(data) {
+        return data ?
+            knex('posts').select('posts.*', { author: 'users.username' }).join('user', { 'users.id': 'posts.author_id' }).where(data).first() :
+            knex('posts').select('posts.*', { author: 'users.username' }).join('user', { 'users.id': 'posts.author_id' }).orderBy('id', 'desc');
+
+        //knex("posts").where(data).first() : knex("posts").orderBy("id", "desc");
     },
-    update(id, post) {
-        return knex("posts").where("id", id).update(post, "*");
+    update(data, post) {
+        return knex("posts").where(data).update(post, "*");
     },
-    delete(id) {
-        return knex("posts").where("id", id).del();
+    delete(data) {
+        return knex("posts").where(data).del();
     }
 }
 
-module.exports.Comments = {
+module.exports.Commentss = {
     create(comment) {
         return knex("comments").insert(comment, "*");
     },
-    read(id) {
-        return id ? knex("comments").where({ id }).first() : knex("comments");
+    read(data) {
+        return data ? knex("comments").where(data).first() : knex("comments");
     },
-    update(id, comment) {
-        return knex("comments").where({ id }).update(comment, "*");
+    update(data, comment) {
+        return knex("comments").where(data).update(comment, "*");
     },
-    delete(id) {
-        return knex("comments").where({ id }).del();
+    delete(data) {
+        return knex("comments").where(data).del();
     },
-    getFromPost(id) {
-        return knex("comments").where("post_id", id).orderBy("id", "desc").limit(8);
+    getFromPost(data) {
+        return knex("comments").where(data).orderBy("id", "desc").limit(8);
+    }
+}
+
+module.exports.Userss = {
+    create(comment) {
+        return knex("comments").insert(comment, "*");
+    },
+    read(data) {
+        return data ? knex("comments").where(data).first() : knex("comments");
+    },
+    update(data, comment) {
+        return knex("comments").where(data).update(comment, "*");
+    },
+    delete(data) {
+        return knex("comments").where(data).del();
+    },
+    getFromPost(data) {
+        return knex("comments").where(data).orderBy("id", "desc").limit(8);
     }
 }
 

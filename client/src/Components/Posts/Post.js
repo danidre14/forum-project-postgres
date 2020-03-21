@@ -14,7 +14,7 @@ function Post(props) {
                 <Card.Body>
                     <Card.Title as="h3">{title}</Card.Title>
                     <Card.Subtitle className="mb-4 text-muted small">
-                        by {username || "anonymous"}, x minutes ago
+                        by <span className="text-info">{username || "anonymous"}</span>, x minutes ago
                     </Card.Subtitle>
                     <div className="mb-3">
                         {postBody}

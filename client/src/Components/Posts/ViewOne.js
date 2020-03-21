@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 
 import { Breadcrumb } from "react-bootstrap";
 
-import makeRequest from "../Utils/makeRequest.jsx";
+import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors.jsx";
 
 import Post from "./Post";
@@ -11,7 +11,7 @@ import CreateComment from "../Comments/Create";
 import Comment from "../Comments/Comment";
 import LoadingAnim from "../LoadingAnim";
 
-function PostViewOne() {
+function PostViewOne(props) {
     const { id } = useParams();
     const post_id = id;
 
@@ -48,14 +48,14 @@ function PostViewOne() {
         <>
             <Post classNames={`no-border shadow-sm`} post={post} canView={false}>
                 <hr />
-                <CreateComment post_id={id} fetchPost={fetchPost} />
+                <CreateComment post_id={id} user={props.user} fetchPost={fetchPost} />
             </Post>
         </>);
 
     const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment classNames={`no-border shadow-sm`} key={comment.id} comment={{ ...comment, post_id }} />);
     return (
         <>
-            <Breadcrumb>
+            {/* <Breadcrumb>
                 <Breadcrumb.Item>
                     <Link to="/" className="text-info">Home</Link>
                 </Breadcrumb.Item>
@@ -63,7 +63,7 @@ function PostViewOne() {
                     <Link to="/posts/view" className="text-info">Posts</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>{postTitle}</Breadcrumb.Item>
-            </Breadcrumb>
+            </Breadcrumb> */}
             <Error />
             {thePost}
             {!isLoadingPost && Comments}

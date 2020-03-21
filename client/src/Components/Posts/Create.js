@@ -1,11 +1,14 @@
 import React from "react";
 
-import makeRequest from "../Utils/makeRequest.jsx";
+import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors.jsx";
 import useInputChange from "../Utils/useInputChange.jsx";
 
 
-const Validator = { ...require("validator"), ...require("../../util/utilities") };
+import utilities from "../../util/utilities";
+const { Validator } = utilities;
+// const { Validator } = require("../../util/utilities");
+// const Validator = { ...require("validator"), ...require("../../util/utilities") };
 
 import { Link } from "react-router-dom";
 
@@ -15,8 +18,8 @@ import { Card, Breadcrumb } from "react-bootstrap";
 import { Form, Col, Row, InputGroup, Button } from 'react-bootstrap';
 
 function PostCreate(props) {
-    const [{ username, title, body }, handleInputChange] = useInputChange({
-        username: "",
+    const { user } = props;
+    const [{ title, body }, handleInputChange] = useInputChange({
         title: "",
         body: ""
     });
@@ -25,12 +28,14 @@ function PostCreate(props) {
 
     const createPost = (e) => {
         e.preventDefault();
-        const post = validatePost({ username, title, body });
+        if (!user.loggedIn) return setError("Log in to create a post");
+
+        const post = validatePost({ title, body });
         if (!post) return setError("Invalid post");
 
         function postData() {
-            makeRequest([`/api/v1/posts/`, "post"], post, (data) => {
-                props.history.push(`/posts/view/${data.id}`)
+            makeRequest([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, (data) => {
+                props.history.push(`/posts/view/${data.id}`);
             }, (message) => {
                 setError(`Cannot post blog: ${message}`);
             })
@@ -40,12 +45,12 @@ function PostCreate(props) {
 
     return (
         <>
-            <Breadcrumb>
+            {/* <Breadcrumb>
                 <Breadcrumb.Item>
                     <Link to="/" className="text-info">Home</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>Create</Breadcrumb.Item>
-            </Breadcrumb>
+            </Breadcrumb> */}
             <Card className="mb-3 no-border shadow-sm">
                 <Card.Body>
                     <Error />
@@ -63,8 +68,8 @@ function PostCreate(props) {
                                         type="text"
                                         placeholder="Username"
                                         name="username"
-                                        value={username}
-                                        onChange={handleInputChange}
+                                        disabled
+                                        value={user.username}
                                     />
                                 </InputGroup>
                             </Col>
@@ -102,7 +107,7 @@ function PostCreate(props) {
     )
 }
 
-const validatePost = ({ username, title, body }) => {
+const validatePost = ({ title, body }) => {
     const validTitle = Validator.isString(title) && Validator.isLength(title, { min: 1, max: 256 });
     const validBody = Validator.isString(body) && Validator.isLength(body, { min: 1, max: 2048 });
     const post = {}
@@ -110,7 +115,6 @@ const validatePost = ({ username, title, body }) => {
         post.title = title;
         post.body = body;
     } else return false;
-    if (username && Validator.isLength(username, { min: 1, max: 64 })) post.username = username;
     return post;
 }
 

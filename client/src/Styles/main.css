@@ -1,3 +1,8 @@
+@import "properFooterSize.css";
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 pre {
     font-family: inherit;
     font-size: 1em;
@@ -27,7 +32,7 @@ pre {
     background: #0000;
 }
 
-.navbar {
+.navbar .container {
     justify-content: initial;
 }
 

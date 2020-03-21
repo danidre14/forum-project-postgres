@@ -1,32 +1,35 @@
 import React, { useState } from "react";
 
-import makeRequest from "../Utils/makeRequest.jsx";
+import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors.jsx";
 import useInputChange from "../Utils/useInputChange.jsx";
 
 
-const Validator = { ...require("validator"), ...require("../../util/utilities") };
+import utilities from "../../util/utilities";
+const { Validator } = utilities;
+// const Validator = { ...require("validator"), ...require("../../util/utilities") };
 
 import { Form, Button, Col, Row, InputGroup, ButtonToolbar } from "react-bootstrap";
 
 function CommentCreate(props) {
-    const [input, handleInputChange, setInput] = useInputChange({
-        username: "",
+    const [{ body }, handleInputChange, setInput] = useInputChange({
         body: ""
     });
 
     const [isShowingCreate, setIsShowingCreate] = useState(false);
     const [Error, setError] = useErrors(false);
 
-    const { post_id } = props;
+    const { post_id, user } = props;
 
     const createComment = (e) => {
         e.preventDefault();
-        const comment = validateComment({ username, body, post_id });
+        if (!user.loggedIn) return setError("Sign in to comment on this post.");
+
+        const comment = validateComment({ body, post_id });
         if (!comment) return setError("Invalid comment");
 
         function postData() {
-            makeRequest([`/api/v1/comments/${post_id}`, "post"], comment, (data) => {
+            makeRequest([`/api/v1/comments/${post_id}`, "post"], { ...comment, username: user.username, author_id: user.id }, (data) => {
                 props.fetchPost();
                 showCommentCreate(false);
                 setError(false);
@@ -43,13 +46,10 @@ function CommentCreate(props) {
         } else {
             setIsShowingCreate(false);
             setInput({
-                username: "",
                 body: ""
             });
         }
     }
-
-    const { username, body } = input;
 
     if (isShowingCreate) {
         return (
@@ -71,8 +71,8 @@ function CommentCreate(props) {
                                     type="text"
                                     placeholder="Username"
                                     name="username"
-                                    value={username}
-                                    onChange={handleInputChange}
+                                    disabled
+                                    value={user.username}
                                 />
                             </InputGroup>
                         </Col>
@@ -108,7 +108,7 @@ function CommentCreate(props) {
     }
 }
 
-const validateComment = ({ username, body, post_id }) => {
+const validateComment = ({ body, post_id }) => {
     if (!Validator.isNumber(post_id)) return false;
     const validBody = Validator.isString(body) && Validator.isLength(body, { min: 1, max: 1024 });
     const comment = {}
@@ -116,7 +116,6 @@ const validateComment = ({ username, body, post_id }) => {
         comment.body = body;
         comment.post_id = post_id;
     } else return false;
-    if (username && Validator.isLength(username, { min: 1, max: 64 })) comment.username = username;
     return comment;
 }
 

@@ -3,11 +3,21 @@ const express = require("express");
 const app = express();
 const path = require("path");
 
+const session = require("express-session");
+const passport = require("passport");
+
 const publicRouter = require("./routes/index");
 const apiRouter = require("./api/index");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET, //use env vars over time
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/v1/", apiRouter);
 

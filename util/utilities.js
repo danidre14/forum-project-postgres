@@ -1,8 +1,11 @@
 module.exports = {
-    isNumber(val) {
-        return !isNaN(val);
-    },
-    isString(val) {
-        return typeof val === "string";
+    Validator: {
+        ...require("validator"),
+        isNumber(val) {
+            return !isNaN(val);
+        },
+        isString(val) {
+            return typeof val === "string";
+        }
     }
 }
