@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 
 import makeRequest from "./Utils/makeRequest";
 import { Route, Redirect } from "react-router-dom";
+import LoadingAnim from "./LoadingAnim";
 
 function ControlRoute({ component: Component, ...props }) {
   const pathname = props.location.pathname;
-  const params = props.location.search;
-  const fullPath = `${pathname}${params}`;
+  const query = props.location.search;
+  const fullPath = `${pathname}${query}`;
 
   const [loaded, setLoaded] = useState(false);
 
@@ -38,7 +39,10 @@ function ControlRoute({ component: Component, ...props }) {
           loaded === true ? (
             <Component {...props} {...routeProps} />
           ) : loaded === false ? (
-            <>Loading</>
+            <>
+              {" "}
+              <LoadingAnim />
+            </>
           ) : (
             <Redirect to={loaded} />
           )

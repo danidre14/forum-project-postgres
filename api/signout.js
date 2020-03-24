@@ -8,8 +8,14 @@ router.get('/*', (req, res) =>
 );
 
 router.delete('/', checkAuthenticated, (req, res) => {
-    req.logOut();
-    res.json(statusMessage({ message: "Success" }));
+    const { id: qId, username: qUsername } = req.query;
+    const { id, username } = req.user;
+    if (id == qId && username == qUsername) {
+        req.logOut();
+        res.json(statusMessage({ message: "Success" }));
+    } else {
+        res.json(statusMessage({ message: "Fail" }));
+    }
 });
 
 function checkAuthenticated(req, res, next) {

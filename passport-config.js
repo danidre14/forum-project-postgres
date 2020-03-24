@@ -14,10 +14,12 @@ function initialize(passport, getUserByUsername, getUserByEmail, getUserById) {
         //https://www.youtube.com/watch?v=gzDB0ZGOjA0 > 12:59
         try {
             if (await bcrypt.compare(password, user.password)) {
-                if (!user.is_verified)
-                    return done(null, false, { message: 'Account not activated. Sign up again to re-send activation token.' });
-                else
-                    return done(null, user);
+                if (!user.is_verified) {
+                    return done(null, false, { message: 'Account not activated. Check your email, or sign up again.' });
+                } else {
+                    const authedUser = { id: user.id, username: user.username };
+                    return done(null, authedUser);
+                }
             } else {
                 return done(null, false, { message: 'Username or Password incorrect' });
             }

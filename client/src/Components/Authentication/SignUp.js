@@ -1,10 +1,16 @@
 import React from "react";
 
 import { Link } from "react-router-dom";
+
+import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
+
+import useErrors from "../Utils/useErrors.jsx";
 import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange.jsx";
 
 function SignUp(props) {
+    const [Error, setError] = useErrors(false);
+
     const [{ username, email, email2, password, password2 }, handleInputChange] = useInputChange({
         username: "",
         email: "",
@@ -14,6 +20,7 @@ function SignUp(props) {
     });
 
     const doSignUp = (e) => {
+        if (username === "" || email === "" || email2 === "" || password === "" || password2 === "") return;
         e.preventDefault();
 
         console.log("tried to sign up");
@@ -22,59 +29,123 @@ function SignUp(props) {
         // if (!post) return setError("Invalid post");
 
         function postData() {
+            setError(false);
             makeRequest([`/api/v1/signup/`, "post"], user, ({ message: data }) => {
                 if (data.message === "Success") {
                     console.log("Make notification", data.notif);
-                    props.history.push(`/signin/`);
+                    props.history.push(data.gotoUrl || `/signin/`);
                     // props.history.push(`/signup/verify`);
-                } else
-                    alert("Failed: " + data)
+                } else {
+                    if (typeof data === "string") {
+                        setError(data);
+                    } else {
+                        const msg = [];
+                        for (const i in data)
+                            if (data[i] !== "") msg.push(data[i]);
+                        setError(msg.join("\n"));
+                    }
+                }
             }, (message) => {
-                // setError(`Cannot post blog: ${message}`);
-                alert("Errorrr: " + message);
-            })
+                setError("Cannot sign up: " + message);
+            });
         }
         postData();
     }
 
     return (
         <>
-            <h1>Sign Up</h1>
-            <form>
-                <div>
-                    <label htmlFor="username">Name: </label>
-                    <input type="text" id="username" name="username" required
-                        value={username}
-                        onChange={handleInputChange} />
-                </div>
-                <div>
-                    <label htmlFor="email">Email: </label>
-                    <input type="email" id="email" name="email" required
-                        value={email}
-                        onChange={handleInputChange} />
-                </div>
-                <div>
-                    <label htmlFor="email2">Re-Enter Email: </label>
-                    <input type="email" id="email2" name="email2" required
-                        value={email2}
-                        onChange={handleInputChange} />
-                </div>
-                <div>
-                    <label htmlFor="password">Password: </label>
-                    <input type="password" id="password" name="password" required
-                        value={password}
-                        onChange={handleInputChange} />
-                </div>
-                <div>
-                    <label htmlFor="password2">Re-Enter Password: </label>
-                    <input type="password" id="password2" name="password2" required
-                        value={password2}
-                        onChange={handleInputChange} />
-                </div>
-                <button type="submit" onClick={doSignUp}>Sign Up</button>
-            </form>
-            <hr />
-            <Link to="/signin"> Sign In</Link>
+            <Card className="mb-3 no-border shadow-sm">
+                <Card.Body>
+                    <Card.Title as="h2" className="mb-3">Sign Up</Card.Title>
+                    <Form className="mb-3">
+                        <Form.Group as={Row} controlId="username">
+                            <Form.Label column sm="auto">Username</Form.Label>
+                            <Col>
+                                <InputGroup size="sm">
+                                    <InputGroup.Prepend >
+                                        <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control
+                                        size="sm"
+                                        type="text"
+                                        placeholder="Username"
+                                        name="username"
+                                        value={username}
+                                        required={true}
+                                        onChange={handleInputChange}
+                                    />
+                                </InputGroup>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="auto">Email</Form.Label>
+                            <Col>
+                                <Form.Group as={Row} controlId="email">
+                                    <Col>
+                                        <Form.Control
+                                            size="sm"
+                                            type="email"
+                                            placeholder="Email"
+                                            name="email"
+                                            value={email}
+                                            required={true}
+                                            onChange={handleInputChange}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="email2">
+                                    <Col>
+                                        <Form.Control
+                                            size="sm"
+                                            type="email"
+                                            placeholder="Confirm Email"
+                                            name="email2"
+                                            value={email2}
+                                            required={true}
+                                            onChange={handleInputChange}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="auto">Password</Form.Label>
+                            <Col>
+                                <Form.Group as={Row} controlId="password">
+                                    <Col>
+                                        <Form.Control
+                                            size="sm"
+                                            type="password"
+                                            placeholder="Password"
+                                            name="password"
+                                            value={password}
+                                            required={true}
+                                            onChange={handleInputChange}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="password2">
+                                    <Col>
+                                        <Form.Control
+                                            size="sm"
+                                            type="password"
+                                            placeholder="Confirm Password"
+                                            name="password2"
+                                            value={password2}
+                                            required={true}
+                                            onChange={handleInputChange}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                            </Col>
+                        </Form.Group>
+                        <Button variant="info" type="submit" onClick={doSignUp}>Sign Up</Button>
+                    </Form>
+                    <Error />
+                    <hr />
+                    <Card.Text>Already have an account?<Link to="/signin"> Sign In</Link></Card.Text>
+                </Card.Body>
+            </Card>
         </>
     );
 }

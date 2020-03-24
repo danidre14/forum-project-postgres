@@ -12,7 +12,13 @@ function DivLink(props) {
 
   const history = useHistory();
 
-  function handleClick() {
+  function handleClick(e) {
+    if (
+      e.target.tagName.toLowerCase() === "a" ||
+      e.target.tagName.toLowerCase() === "button"
+    )
+      return;
+
     history.push(href);
   }
 

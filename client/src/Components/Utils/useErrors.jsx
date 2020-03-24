@@ -6,8 +6,8 @@ function useErrors(initialErrorValue) {
   const [error, setError] = useState(initialErrorValue);
 
   function Error() {
-    const errMsg = `An error has occurred: ${
-      error === true ? "Unknown" : error
+    const errMsg = `${
+      error === true ? "An error has occurred: Unknown" : error
     }`;
     return (
       <>
@@ -19,7 +19,7 @@ function useErrors(initialErrorValue) {
             dismissible
           >
             <Alert.Heading>Error!</Alert.Heading>
-            <p>{errMsg}</p>
+            <pre>{errMsg}</pre>
           </Alert>
         )}
       </>

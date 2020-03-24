@@ -37,37 +37,38 @@ router.get("/view/:id", async (req, res) => {
 router.post("/:post_id", rateLimiter.createCommentLimiter, tryGoNext, checkAuthenticated, async (req, res) => {
 
     const post_id = req.params.post_id;
-    if (!Validator.isNumber(post_id)) return res.status(500).json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(post_id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
 
     const { username, body, author_id } = req.body;
-    const comment = validateComment({ username, body, author_id }, req.user.username, req.user.id);
+    let comment = validateComment({ username, body, author_id }, req.user.username, req.user.id);
 
-    if (!comment) return res.status(500).json(statusMessage("Invalid comment", statusCodes.ERROR, 500));
-    const newComment = await Comments.create({ ...comment, author_id, post_id });
+    if (!comment) return res.json(statusMessage("Invalid comment", statusCodes.ERROR, 500));
+    comment = await Comments.create({ ...comment, author_id, post_id });
 
-    res.json(newComment);
+    res.json(statusMessage({ message: "Success", comment_id: comment.id }));
 });
 
 router.put("/:id", tryGoNext, checkAuthenticated, async (req, res) => {
 
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
 
     const { username, body, post_id } = req.body;
-    const comment = validateComment({ username, body, post_id });
+    let comment = validateComment({ username, body, post_id });
 
-    if (!comment) return res.status(500).json(statusMessage("Invalid comment", statusCodes.ERROR, 500));
-    const newComment = await Comments.update({ id }, comment);
+    if (!comment) return res.json(statusMessage("Invalid comment", statusCodes.ERROR, 500));
+    comment = await Comments.update({ id }, comment);
 
-    res.json(newComment);
+    res.json(statusMessage({ message: "Success", comment_id: comment.id }));
+
 });
 
 router.delete("/:id", tryGoNext, checkAuthenticated, async (req, res) => {
 
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
 
     await Comments.delete({ id });
 

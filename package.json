@@ -12,6 +12,7 @@
     "start": "node server.js",
     "devServer": "nodemon server.js",
     "devClient": "cd client && npm start",
+    "openDB": "psql danis-small-forum",
     "devStart": "concurrently --kill-others-on-fail \"npm run devServer\" \"npm run devClient\"",
     "heroku-postbuild": "cd client && NPM_CONFIG_PRODUCTION=false npm i --only=dev && NPM_CONFIG_PRODUCTION=true npm i && npm run build"
   },

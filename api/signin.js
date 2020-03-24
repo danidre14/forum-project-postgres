@@ -14,14 +14,14 @@ try {
         passport,
         async username => {
             try {
-                return await Users.findOneByArray(['username', 'ilike', `%${username}%`], 'id is_verified password username');
+                return await Users.findOne(['username', 'ilike', `${username}`], 'id is_verified password username');
             } catch {
                 return null;
             }
         },
         async email => {
             try {
-                return await Users.findOneByArray(['email', 'ilike', `%${email}%`], 'id is_verified password username');
+                return await Users.findOne(['email', 'ilike', `${email}`], 'id is_verified password username');
             } catch {
                 return null;
             }

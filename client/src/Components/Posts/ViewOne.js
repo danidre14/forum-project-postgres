@@ -25,7 +25,7 @@ function PostViewOne(props) {
     function fetchPost() {
         makeRequest([`/api/v1/posts/${id}`, "get"], {}, (data) => {
             setPost(data);
-            setPostTitle(data.title);
+            // setPostTitle(data.title);
             setIsLoadingPost(false);
             fetchCommentsPerPost();
         }, (message) => {
@@ -48,7 +48,7 @@ function PostViewOne(props) {
         <>
             <Post classNames={`no-border shadow-sm`} post={post} canView={false}>
                 <hr />
-                <CreateComment post_id={id} user={props.user} fetchPost={fetchPost} />
+                <CreateComment post_id={id} fetchPost={fetchPost} />
             </Post>
         </>);
 

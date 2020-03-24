@@ -5,9 +5,6 @@ const Tokens = {
         const [theToken] = await knex("tokens").insert(token, "*");
         return theToken;
     },
-    read(data) {
-        return data ? knex("tokens").where(data).first() : knex("tokens");
-    },
     async update(data, token) {
         const [theToken] = await knex("tokens").where(data).update(token, "*");
         return theToken;
@@ -15,7 +12,12 @@ const Tokens = {
     delete(data) {
         return knex("tokens").where(data).del();
     },
-    async findOne(data) {
+    async findAll(data = {}) {
+        await knex.raw(`DELETE FROM tokens WHERE created_at < NOW() - INTERVAL '2 hours';`);
+        const token = await knex("tokens").where(data);
+        return token;
+    },
+    async findOne(data = {}) {
         await knex.raw(`DELETE FROM tokens WHERE created_at < NOW() - INTERVAL '2 hours';`);
         const token = await knex("tokens").where(data).first();
         return token;

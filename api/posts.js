@@ -36,32 +36,32 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", rateLimiter.createPostLimiter, tryGoNext, checkAuthenticated, async (req, res) => {
     const { username, title, body, author_id } = req.body;
-    const post = validatePost({ username, title, body, author_id }, req.user.username, req.user.id);
+    let post = validatePost({ username, title, body, author_id }, req.user.username, req.user.id);
 
-    if (!post) return res.status(500).json(statusMessage("Invalid post", statusCodes.ERROR, 500));
-    const newPost = await Posts.create({ ...post, author_id });
+    if (!post) return res.json(statusMessage("Invalid post", statusCodes.ERROR, 500));
+    post = await Posts.create({ ...post, author_id });
 
-    res.json(newPost);
+    res.json(statusMessage({ message: "Success", post_id: post.id }));
 });
 
 router.put("/:id", checkAuthenticated, tryGoNext, async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
 
     const { username, title, body } = req.body;
-    const post = validatePost({ username, title, body });
+    let post = validatePost({ username, title, body });
 
-    if (!post) return res.status(500).json(statusMessage("Invalid post", statusCodes.ERROR, 500));
-    const newPost = await Posts.update({ id }, post);
+    if (!post) return res.json(statusMessage("Invalid post", statusCodes.ERROR, 500));
+    post = await Posts.update({ id }, post);
 
-    res.json(newPost);
+    res.json(statusMessage({ message: "Success", post }));
 });
 
 router.delete("/:id", checkAuthenticated, tryGoNext, async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
 
     await Posts.delete({ id });
 

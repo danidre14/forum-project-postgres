@@ -5,11 +5,11 @@ async function makeRequest([link, method], options, success, error) {
 		error = error ? error : () => console.log("Request Unsuccessful");
 		const { data } = await axios[method || "get"](link || "/", options || {});
 
-		console.log("MakeRequest", { link, data });
+		//console.log("MakeRequest", { link, data });
 		success(data);
 	} catch (e) {
 		error(e);
-		console.trace(e.message);
+		//console.trace(e.message);
 	}
 }
 

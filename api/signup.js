@@ -28,6 +28,9 @@ router.get('/verify', checkNotAuthenticated, (req, res) => { res.json() });
 //Create Confimation Page Route
 router.post('/verify', checkNotAuthenticated, async (req, res) => {
     try {
+        if (req.body.token !== req.query.token) return res.json(
+            statusMessage('An error occured. Please check your email and try again.', statusCodes.ERROR, 500)
+        );
         const token = await Tokens.findOne({ token: req.body.token, purpose: tokenPurposes.TO_VERIFY_ACCOUNT });
         //Check if token exists
         if (!token) {
@@ -39,10 +42,11 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
         }
 
         //Check if token matches account email  
-        const user = await Users.findTokenMatchesAccount(['id', '=', `${token.user_id}`], ['username', 'ilike', `%${req.body.username}%`], ['email', 'ilike', `%${req.body.email}%`]);
+        console.log("Check if token match account", token.user_id, req.body.username, req.body.email);
+        const user = await Users.findOne([['id', `${token.user_id}`], ['username', 'ilike', `${req.body.username}`], ['email', 'ilike', `${req.body.email}`]]);
         if (!user) {
             return res.json(
-                statusMessage('Unable to find an account with that email. Correct the information, or sign up today.', statusCodes.ERROR, 500)
+                statusMessage('Username or email incorrect. Correct the information and try again, or sign up today.', statusCodes.ERROR, 500)
             );
             // req.flash('outsert', {message: 'Unable to find an account with that email. Correct the information, or sign up today.'});
             // return res.redirect('../signup'); //user does not exist
@@ -52,7 +56,7 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
         await Tokens.delete({ id: token.id });
         if (user.is_verified) {
             return res.json(
-                statusMessage('Account already verified. You can sign in.')
+                statusMessage({ message: "Success", value: "Account already verified. You can sign in." })
             );
             // req.flash('outsert', {message: 'Account already verified. You can sign in.', note: true});
             // return res.redirect('../signin'); //user already verified
@@ -62,13 +66,13 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
         await Users.update({ id: user.id }, { is_verified: 1 });
 
         return res.json(
-            statusMessage('Account verified. You may now sign in.')
+            statusMessage({ message: "Success", value: "Account verified. You may now sign in." })
         );
         // req.flash('outsert', {message: 'Account verified. You may now sign in.', note: true});
         // res.redirect('../signin'); //Please log in
 
     } catch (err) {
-        console.log("Message:", err.message);
+        console.log("Message1:", err.message);
         return res.json(
             statusMessage('An error has occured. Please try again, or contact support.', statusCodes.ERROR, 500)
         );
@@ -81,7 +85,7 @@ async function createUser(req, res) {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-        const user = {
+        let user = {
             username: (req.body.username).toLowerCase(),
             email: req.body.email,
             password: hashedPassword,
@@ -95,11 +99,11 @@ async function createUser(req, res) {
             // return res.redirect('/signin');
             console.log("Signed up", user);
             return res.json(
-                statusMessage({ message: "Success", notif: `Development account ${user.email} created. Sign in with username ${user.username}.` })
+                statusMessage({ message: "Success", notif: `Development account ${user.email} created. Sign in with username ${user.username}.`, gotoUrl: "/signin" })
             );
         }
 
-        await Users.create(user);
+        user = await Users.create(user);
         // Create a verification token
         const token = await Tokens.create({ user_id: user.id, purpose: tokenPurposes.TO_VERIFY_ACCOUNT, token: crypto.randomBytes(16).toString('hex') });
 
@@ -111,10 +115,10 @@ async function createUser(req, res) {
         // req.flash('outsert', {message: `A token has been sent to ${user.email}. Check your email to verify your account.`});
         // res.redirect('/signup/v');
         return res.json(
-            statusMessage({ message: "Success", notif: `A token has been sent to ${user.email}. Check your email to verify your account.` })
+            statusMessage({ message: "Success", notif: `A token has been sent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup/verify" })
         );
     } catch (e) {
-        console.log("Message:", e.message);
+        console.log("Message2:", e.message);
         // req.flash('outsert', {message: 'An error has occured. Please report this issue or try again.'});
         // res.redirect('/signup');
         return res.json(
@@ -126,11 +130,11 @@ async function createUser(req, res) {
 async function checkUserExists(req, res, next) {
     try {
         //look for user by username
-        let user = await Users.findOneByArray(['username', 'ilike', `%${req.body.username}%`]);
+        let user = await Users.findOne(['username', 'ilike', `${req.body.username}`]);
         //if user by username does not exist
         if (!user) {
             //look for user by email
-            user = await Users.findOneByArray(['email', 'ilike', `%${req.body.email}%`]);
+            user = await Users.findOne(['email', 'ilike', `${req.body.email}`]);
 
             //if user by email does not exist
             if (!user) {
@@ -172,14 +176,14 @@ async function checkUserExists(req, res, next) {
             const newToken = await Tokens.create({ user_id: user.id, purpose: tokenPurposes.TO_VERIFY_ACCOUNT, token: crypto.randomBytes(16).toString('hex') });
 
             // Send the email for resend token
-            const mailOptions = getMailOptions(user.username, user.email, req.headers.host, newTokens.token);
+            const mailOptions = getMailOptions(user.username, user.email, req.headers.host, newToken.token);
 
             sendMail(mailOptions, user.email);
 
             // req.flash('outsert', { message: `A token has been resent to ${user.email}. Check your email to verify your account.` });
             // return res.redirect('/signup/v');
             return res.json(
-                statusMessage(`A token has been resent to ${user.email}. Check your email to verify your account.`)
+                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup/verify" })
             );
         }
 
@@ -202,18 +206,18 @@ async function checkUserExists(req, res, next) {
             const newToken = await Tokens.create({ user_id: user.id, purpose: tokenPurposes.TO_VERIFY_ACCOUNT, token: crypto.randomBytes(16).toString('hex') });
 
             // Send the email for resend token
-            const mailOptions = getMailOptions(user.username, user.email, req.headers.host, newTokens.token);
+            const mailOptions = getMailOptions(user.username, user.email, req.headers.host, newToken.token);
 
             sendMail(mailOptions, user.email);
 
             // req.flash('outsert', { message: `A token has been sent to ${user.email}. Check your email to verify your account.` });
             // return res.redirect('/signup/v');
             return res.json(
-                statusMessage(`A token has been resent to ${user.email}. Check your email to verify your account.`)
+                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup/verify" })
             );
         }
     } catch (e) {
-        console.log("Message:", e.message);
+        console.log("Message3:", e.message);
         // req.flash('outsert', { message: 'Error Occurred.' });
         // return res.redirect('/signup');
         return res.json(
@@ -229,14 +233,14 @@ function validateInfomation(req, res, next) {
     const username = req.body.username;
     let uMessage = "";
     if (username.length < 4 || username.length > 15) {
-        uMessage += "-Must be 4-15 characters long";
+        uMessage += "-Username must be 4-15 characters long";
         error = true;
     } else {
         if (username.charAt(0).match(/^[a-z]+$/ig) === null) {
             uMessage += "-Username must start with a letter\n";
             error = true;
         } else if (username.match(/^[a-z][a-z\d]+$/ig) === null) {
-            uMessage += "-Symbols/Spaces not allowed";
+            uMessage += "-Symbols/Spaces not allowed in username";
             error = true;
         }
     }
@@ -253,11 +257,11 @@ function validateInfomation(req, res, next) {
     //     error = true;
     // }
     if (pName.search(/\d/) === -1) {
-        pMessage += "-Must contain at least one number\n";
+        pMessage += "-Password must contain at least one number\n";
         error = true;
     }
     if (pName.search(/[A-Z]/) === -1) {
-        pMessage += "-Must contain at least one uppercase letter\n";
+        pMessage += "-Password must contain at least one uppercase letter";
         error = true;
     }
     //re-entered password
@@ -315,18 +319,19 @@ function checkNotAuthenticated(req, res, next) {
 
 function getMailOptions(username = 'User', email, host, token) {
     const protocol = `https`;
-    const siteLink = `${protocol}:\/\/${host}`;
+    const siteLink = process.env.NODE_ENV !== 'production' ?
+        "localhost:8080" : `${protocol}:\/\/${host}`;
     const tokenLink = `${siteLink}\/signup\/verify?token=${token}`;
     const options = {
         from: 'Dani-Smorum <no-reply@dani-smorum.com>',
-        to: `${req.body.username} <${req.body.email}>`,
+        to: `${username} <${email}>`,
         subject: 'Dani-Smorum: Account Verification Token',
-        text: `Hello ${req.body.username},\n\n
+        text: `Hello ${username},\n\n
         Please verify your account by clicking the following link: \n${tokenLink}.\n`,
         html: `
         <body style="margin:0;padding:0;">
 	        <div style="padding:0;margin:0;text-align:center;font-size:1.4rem;padding:0;font-family:Helvetica;">
-                <h2>Hello ${req.body.username},</h2>
+                <h2>Hello ${username},</h2>
                 <div style="text-align:left;">
                     <p>Welcome to Dani-Smorum. Before you sign in, however, you are required to verify your account.</p>
                     <p>Please verify your account by clicking the button below:</p>
@@ -354,7 +359,7 @@ function sendMail(mailOptions, email) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     sgMail.send(mailOptions, function (err) {
         if (err) {
-            return console.log("Message:", err.message);
+            return console.log("Message4:", err.message);
         }
         console.log('A verification email has been sent to ' + email + '.');
     });

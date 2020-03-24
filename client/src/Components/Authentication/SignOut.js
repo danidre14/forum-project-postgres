@@ -1,25 +1,45 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 
-import { Button } from 'react-bootstrap';
+import UserContext from "../../context/userContext";
+import { parseQueryString } from "../../util/utilities";
 
 import makeRequest from "../Utils/makeRequest";
-import { withRouter } from "react-router-dom";
+
+
+import LoadingAnim from "../LoadingAnim";
 
 function SignOut(props) {
+    const { user, signOutUser } = useContext(UserContext);
+
+    const query = props.location.search;
+    const { id: qId, username: qUsername } = parseQueryString(query);
+    const { id, username } = user;
+
+
     function signOut() {
-        makeRequest([`/api/v1/signout`, "delete"], {}, ({ message: data }) => {
+        makeRequest([`/api/v1/signout${query}`, "delete"], {}, ({ message: data }) => {
             if (data.message === "Success") {
-                props.history.push(`/signin`);
-                if (props.signOut) props.signOut();
+                props.history.goBack();
+                if (signOutUser) signOutUser();
+            } else {
+                props.history.goBack();
             }
         }, (message) => {
-            alert("Error logging out: " + message);
+            console.log("Error logging out: " + message);
+            props.history.goBack();
         });
     }
 
-    return (
-        <Button variant="info" onClick={signOut}>Sign Out</Button>
-    );
+    useEffect(() => {
+        if (qId && qUsername && id == qId && username == qUsername) signOut();
+        else {
+            props.history.goBack();
+        }
+    }, [])
+
+    return (<>
+        <LoadingAnim />
+    </>);
 }
 
-export default withRouter(SignOut);
+export default SignOut;

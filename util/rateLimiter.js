@@ -3,7 +3,7 @@ const rateLimit = require("express-rate-limit");
 module.exports = {
     createAccountLimiter: rateLimit({
         windowMs: 60 * 60 * 1000,
-        max: 5,
+        max: 15,
         message: "Too many accounts created. Try again in an hour."
     }),
     createPostLimiter: rateLimit({

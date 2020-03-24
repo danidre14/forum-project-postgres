@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from "react-router-dom";
+import UserContext from "./context/userContext";
+
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 import makeRequest from "./Components/Utils/makeRequest";
@@ -13,7 +15,9 @@ import PostsCreate from "./Components/Posts/Create";
 
 
 import SignUp from "./Components/Authentication/SignUp";
+import SignUpVerify from "./Components/Authentication/SignUpVerify";
 import SignIn from "./Components/Authentication/SignIn";
+import SignOut from "./Components/Authentication/SignOut";
 
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
@@ -23,13 +27,15 @@ function RedirectHomePage() {
 }
 
 
-function checkIfLoggedIn(setUser) {
+function checkIfLoggedIn(signInUser, signOutUser) {
     function fetchUser() {
         makeRequest([`/api/v1/users`, "get"], {}, (data) => {
-            if (data.message === "Success")
-                setUser({ loggedIn: true, username: data.username, id: data.id });
+            if (data.message === "Success") {
+                const user = { username: data.username, id: data.id };
+                signInUser(user);
+            } else signOutUser();
         }, (message) => {
-            alert("Error: Got error");
+            console.log("Error: Got error trying to check if signed in");
         })
     }
 
@@ -38,33 +44,41 @@ function checkIfLoggedIn(setUser) {
 }
 
 function App() {
-    const [user, setUser] = useState({ loggedIn: false, username: null, id: null });
+    const [user, setUser] = useState({ loggedIn: null, username: null, id: null });
     function signOutUser() {
         setUser({ loggedIn: false, username: null, id: null });
     }
+    function signInUser({ username, id }) {
+        setUser({ loggedIn: true, username, id });
+    }
 
     useEffect(() => {
-        checkIfLoggedIn(setUser);
+        checkIfLoggedIn(signInUser, signOutUser);
     }, []);
 
     return (
         <Router>
             <div className="body">
-                <Header signOutUser={signOutUser} user={user} />
+                <UserContext.Provider value={{ user, signInUser, signOutUser }}>
+                    <Header />
 
-                <main className="pt-10 pb-3 bg-ghostwhite">
-                    <Container>
-                        <Switch>
-                            <ControlRoute key={1} path="/signup" component={SignUp} />
-                            <ControlRoute key={2} path="/signin" signInUser={setUser} component={SignIn} />
-                            <ControlRoute key={3} path="/posts/create" user={user} component={PostsCreate} />
-                            {/* <Route path="/posts/create" render={(props) => <PostsCreate {...props} user={user} />} /> */}
-                            <Route path="/posts/view/:id" render={(props) => <PostsViewOne {...props} user={user} />} />
-                            <Route path="/posts/view" component={PostsView} />
-                            <Route path="/" component={RedirectHomePage} />
-                        </Switch>
-                    </Container>
-                </main>
+                    <main className="pt-10 pb-3 bg-ghostwhite">
+                        <Container>
+                            <Switch>
+                                <ControlRoute key={1} path="/signup/verify" component={SignUpVerify} />
+                                <Route key={2} path="/signout" component={SignOut} />
+                                <ControlRoute key={3} path="/signup" component={SignUp} />
+                                <ControlRoute key={4} path="/signin" component={SignIn} />
+                                <ControlRoute key={5} path="/posts/create" component={PostsCreate} />
+                                {/* <Route path="/posts/create" render={(props) => <PostsCreate {...props} user={user} />} /> */}
+                                {/* <Route path="/posts/view/:id" render={(props) => <PostsViewOne {...props} user={user} />} /> */}
+                                <Route path="/posts/view/:id" component={PostsViewOne} />
+                                <Route path="/posts/view" component={PostsView} />
+                                <Route path="/" component={RedirectHomePage} />
+                            </Switch>
+                        </Container>
+                    </main>
+                </UserContext.Provider>
                 <Footer />
             </div>
         </Router>

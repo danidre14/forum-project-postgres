@@ -1,24 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors.jsx";
 import useInputChange from "../Utils/useInputChange.jsx";
 
 
-import utilities from "../../util/utilities";
-const { Validator } = utilities;
+// import utilities from "../../util/utilities";
+// const { Validator } = utilities;
+import { Validator } from "../../util/utilities";
 // const { Validator } = require("../../util/utilities");
 // const Validator = { ...require("validator"), ...require("../../util/utilities") };
 
-import { Link } from "react-router-dom";
 
-import { Card, Breadcrumb } from "react-bootstrap";
-
-
-import { Form, Col, Row, InputGroup, Button } from 'react-bootstrap';
+import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
 function PostCreate(props) {
-    const { user } = props;
+    const { user } = useContext(UserContext);
+
     const [{ title, body }, handleInputChange] = useInputChange({
         title: "",
         body: ""
@@ -27,6 +27,7 @@ function PostCreate(props) {
     const [Error, setError] = useErrors(false);
 
     const createPost = (e) => {
+        if (title === "" || body === "") return;
         e.preventDefault();
         if (!user.loggedIn) return setError("Log in to create a post");
 
@@ -34,11 +35,16 @@ function PostCreate(props) {
         if (!post) return setError("Invalid post");
 
         function postData() {
-            makeRequest([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, (data) => {
-                props.history.push(`/posts/view/${data.id}`);
+            setError(false);
+            makeRequest([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, ({ message: data }) => {
+                if (data.message === "Success")
+                    props.history.push(`/posts/view/${data.post_id}`);
+                else {
+                    setError(`Cannot submit post: ${data}`);
+                }
             }, (message) => {
-                setError(`Cannot post blog: ${message}`);
-            })
+                setError(`Cannot submit post: ${message}`);
+            });
         }
         postData();
     }
@@ -69,7 +75,8 @@ function PostCreate(props) {
                                         placeholder="Username"
                                         name="username"
                                         disabled
-                                        value={user.username}
+                                        value={user.username || ""}
+                                        required={true}
                                     />
                                 </InputGroup>
                             </Col>
@@ -83,6 +90,7 @@ function PostCreate(props) {
                                     placeholder="Title"
                                     name="title"
                                     value={title}
+                                    required={true}
                                     onChange={handleInputChange}
                                 />
                             </Col>
@@ -94,12 +102,11 @@ function PostCreate(props) {
                                 placeholder="What's on your mind?"
                                 name="body"
                                 value={body}
+                                required={true}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
-                        <Button variant="info" type="submit" onClick={createPost}>
-                            Post
-                    </Button>
+                        <Button variant="info" type="submit" onClick={createPost}>Post</Button>
                     </Form>
                 </Card.Body>
             </Card>
