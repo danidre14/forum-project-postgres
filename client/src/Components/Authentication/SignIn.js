@@ -11,7 +11,7 @@ import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange.jsx";
 
 function SignIn(props) {
-    const { signInUser } = useContext(UserContext);
+    const { signInUser, setNotifValue } = useContext(UserContext);
     const [Error, setError] = useErrors(false);
 
     const [{ usernameOrEmail, password }, handleInputChange] = useInputChange({
@@ -34,7 +34,9 @@ function SignIn(props) {
                 if (data.message === "Success") {
                     const user = { username: data.username, id: data.id };
                     signInUser(user);
+                    // props.history.goBack();
                     props.history.push(`/`);
+                    setNotifValue(`Successfully signed in. Welcome, ${user.username}!`, 5000);
                 } else
                     setError("Failed Sign In: " + data);
             }, (message) => {

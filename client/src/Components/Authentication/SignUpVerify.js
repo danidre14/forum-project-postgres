@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+
+import UserContext from "../../context/userContext";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
@@ -9,6 +11,7 @@ import useInputChange from "../Utils/useInputChange.jsx";
 import { parseQueryString } from "../../util/utilities";
 
 function SignUpVerify(props) {
+    const { setNotifValue } = useContext(UserContext);
     const [Error, setError] = useErrors(false);
     const query = props.location.search;
     const { token } = parseQueryString(query);
@@ -27,8 +30,6 @@ function SignUpVerify(props) {
         if (username === "" || email === "") return;
         e.preventDefault();
 
-        console.log("tried to verify sign up");
-
         const user = { username, email, token }
 
         function postData() {
@@ -36,7 +37,8 @@ function SignUpVerify(props) {
             makeRequest([`/api/v1/signup/verify${query}`, "post"], user, ({ message: data }) => {
                 if (data.message === "Success") {
                     console.log("Make notification", data.notif);
-                    props.history.push(`/signin/`);
+                    props.history.push(`/signin/`, 10000);
+                    setNotifValue(data.notif);
                 } else {
                     setError(data);
                 }

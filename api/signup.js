@@ -56,7 +56,7 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
         await Tokens.delete({ id: token.id });
         if (user.is_verified) {
             return res.json(
-                statusMessage({ message: "Success", value: "Account already verified. You can sign in." })
+                statusMessage({ message: "Success", notif: "Account already verified. You can sign in." })
             );
             // req.flash('outsert', {message: 'Account already verified. You can sign in.', note: true});
             // return res.redirect('../signin'); //user already verified
@@ -66,7 +66,7 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
         await Users.update({ id: user.id }, { is_verified: 1 });
 
         return res.json(
-            statusMessage({ message: "Success", value: "Account verified. You may now sign in." })
+            statusMessage({ message: "Success", notif: "Account verified. You may now sign in." })
         );
         // req.flash('outsert', {message: 'Account verified. You may now sign in.', note: true});
         // res.redirect('../signin'); //Please log in
@@ -115,7 +115,7 @@ async function createUser(req, res) {
         // req.flash('outsert', {message: `A token has been sent to ${user.email}. Check your email to verify your account.`});
         // res.redirect('/signup/v');
         return res.json(
-            statusMessage({ message: "Success", notif: `A token has been sent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup/verify" })
+            statusMessage({ message: "Success", notif: `A token has been sent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup" })
         );
     } catch (e) {
         console.log("Message2:", e.message);
@@ -183,7 +183,7 @@ async function checkUserExists(req, res, next) {
             // req.flash('outsert', { message: `A token has been resent to ${user.email}. Check your email to verify your account.` });
             // return res.redirect('/signup/v');
             return res.json(
-                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup/verify" })
+                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup" })
             );
         }
 
@@ -213,7 +213,7 @@ async function checkUserExists(req, res, next) {
             // req.flash('outsert', { message: `A token has been sent to ${user.email}. Check your email to verify your account.` });
             // return res.redirect('/signup/v');
             return res.json(
-                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup/verify" })
+                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup" })
             );
         }
     } catch (e) {
@@ -313,7 +313,8 @@ function checkNotAuthenticated(req, res, next) {
         return next();
     }
 
-    res.json(statusMessage({ code: "REROUTE", value: "/" }));
+    res.json({ hardReroute: "/" });
+    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
     // res.json({ message: "Error", value: "Is authenticated" });
 }
 

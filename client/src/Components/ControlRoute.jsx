@@ -16,14 +16,15 @@ function ControlRoute({ component: Component, ...props }) {
       makeRequest(
         [`/api/v1${fullPath}`],
         {},
-        ({ message }) => {
-          if (message) {
-            const { code, value } = message;
-            if (code && code === "REROUTE" && value && value !== pathname)
-              // props.history.push(value);
-              setLoaded(value);
-            else setLoaded(true);
-          } else setLoaded(true);
+        () => {
+          // if (message) {
+          //   const { code, value } = message;
+          //   if (code && code === "REROUTE" && value && value !== pathname)
+          //     // props.history.push(value);
+          //     setLoaded(value);
+          //   else setLoaded(true);
+          // } else
+          setLoaded(true);
         },
         () => {}
       );

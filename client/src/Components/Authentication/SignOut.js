@@ -9,7 +9,7 @@ import makeRequest from "../Utils/makeRequest";
 import LoadingAnim from "../LoadingAnim";
 
 function SignOut(props) {
-    const { user, signOutUser } = useContext(UserContext);
+    const { user, signOutUser, setNotifValue } = useContext(UserContext);
 
     const query = props.location.search;
     const { id: qId, username: qUsername } = parseQueryString(query);
@@ -19,7 +19,9 @@ function SignOut(props) {
     function signOut() {
         makeRequest([`/api/v1/signout${query}`, "delete"], {}, ({ message: data }) => {
             if (data.message === "Success") {
-                props.history.goBack();
+                // props.history.goBack();
+                props.history.push("/signin");
+                setNotifValue(false);
                 if (signOutUser) signOutUser();
             } else {
                 props.history.goBack();

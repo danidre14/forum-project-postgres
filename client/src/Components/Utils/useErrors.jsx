@@ -19,7 +19,7 @@ function useErrors(initialErrorValue) {
             dismissible
           >
             <Alert.Heading>Error!</Alert.Heading>
-            <pre>{errMsg}</pre>
+            <pre className="errorMsg">{errMsg}</pre>
           </Alert>
         )}
       </>

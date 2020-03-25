@@ -34,7 +34,7 @@ router.get("/view/:id", async (req, res) => {
     res.json(comment);
 });
 
-router.post("/:post_id", rateLimiter.createCommentLimiter, tryGoNext, checkAuthenticated, async (req, res) => {
+router.post("/:post_id", rateLimiter.createCommentLimiter, tryGoNext, checkAuthenticatedToManipulateComment, async (req, res) => {
 
     const post_id = req.params.post_id;
     if (!Validator.isNumber(post_id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
@@ -48,7 +48,7 @@ router.post("/:post_id", rateLimiter.createCommentLimiter, tryGoNext, checkAuthe
     res.json(statusMessage({ message: "Success", comment_id: comment.id }));
 });
 
-router.put("/:id", tryGoNext, checkAuthenticated, async (req, res) => {
+router.put("/:id", tryGoNext, checkAuthenticatedToManipulateComment, async (req, res) => {
 
     const id = req.params.id;
 
@@ -64,7 +64,7 @@ router.put("/:id", tryGoNext, checkAuthenticated, async (req, res) => {
 
 });
 
-router.delete("/:id", tryGoNext, checkAuthenticated, async (req, res) => {
+router.delete("/:id", tryGoNext, checkAuthenticatedToManipulateComment, async (req, res) => {
 
     const id = req.params.id;
 
@@ -76,12 +76,12 @@ router.delete("/:id", tryGoNext, checkAuthenticated, async (req, res) => {
 });
 
 
-function checkAuthenticated(req, res, next) {
+function checkAuthenticatedToManipulateComment(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
 
-    res.json(statusMessage("Not authenticated", statusCodes.ERROR, 500));
+    res.json({ hardReroute: "/signin", message: statusMessage("Not authenticated", statusCodes.ERROR, 500) });
 }
 
 const validateComment = ({ username, body, author_id }, sessionUsersName, sessionUsersId) => {
@@ -97,6 +97,7 @@ const validateComment = ({ username, body, author_id }, sessionUsersName, sessio
 
 
 function tryGoNext(req, res, next) {
+    return next();
     if (process.env.NODE_ENV !== "production") return next();
 }
 

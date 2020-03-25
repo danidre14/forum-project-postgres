@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import UserContext from "../../context/userContext";
 
 import { Link } from "react-router-dom";
 
@@ -9,6 +11,7 @@ import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange.jsx";
 
 function SignUp(props) {
+    const { setNotifValue } = useContext(UserContext);
     const [Error, setError] = useErrors(false);
 
     const [{ username, email, email2, password, password2 }, handleInputChange] = useInputChange({
@@ -23,8 +26,6 @@ function SignUp(props) {
         if (username === "" || email === "" || email2 === "" || password === "" || password2 === "") return;
         e.preventDefault();
 
-        console.log("tried to sign up");
-
         const user = { username, email, email2, password, password2 }//validatePost({ username, title, body });
         // if (!post) return setError("Invalid post");
 
@@ -34,7 +35,7 @@ function SignUp(props) {
                 if (data.message === "Success") {
                     console.log("Make notification", data.notif);
                     props.history.push(data.gotoUrl || `/signin/`);
-                    // props.history.push(`/signup/verify`);
+                    setNotifValue(data.notif);
                 } else {
                     if (typeof data === "string") {
                         setError(data);

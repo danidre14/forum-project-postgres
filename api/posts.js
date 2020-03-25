@@ -21,7 +21,8 @@ router.get("/create", (req, res) => {
         return res.json();
     }
 
-    res.json(statusMessage({ code: "REROUTE", value: "/" }));
+    res.json({ hardReroute: "/" });
+    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
 });
 
 router.get("/:id", async (req, res) => {
@@ -34,7 +35,7 @@ router.get("/:id", async (req, res) => {
     res.json(post);
 });
 
-router.post("/", rateLimiter.createPostLimiter, tryGoNext, checkAuthenticated, async (req, res) => {
+router.post("/", rateLimiter.createPostLimiter, tryGoNext, checkAuthenticatedToManipulatePost, async (req, res) => {
     const { username, title, body, author_id } = req.body;
     let post = validatePost({ username, title, body, author_id }, req.user.username, req.user.id);
 
@@ -44,7 +45,7 @@ router.post("/", rateLimiter.createPostLimiter, tryGoNext, checkAuthenticated, a
     res.json(statusMessage({ message: "Success", post_id: post.id }));
 });
 
-router.put("/:id", checkAuthenticated, tryGoNext, async (req, res) => {
+router.put("/:id", tryGoNext, checkAuthenticatedToManipulatePost, tryGoNext, async (req, res) => {
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
@@ -58,7 +59,7 @@ router.put("/:id", checkAuthenticated, tryGoNext, async (req, res) => {
     res.json(statusMessage({ message: "Success", post }));
 });
 
-router.delete("/:id", checkAuthenticated, tryGoNext, async (req, res) => {
+router.delete("/:id", tryGoNext, checkAuthenticatedToManipulatePost, tryGoNext, async (req, res) => {
     const id = req.params.id;
 
     if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
@@ -69,12 +70,12 @@ router.delete("/:id", checkAuthenticated, tryGoNext, async (req, res) => {
 });
 
 
-function checkAuthenticated(req, res, next) {
+function checkAuthenticatedToManipulatePost(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
 
-    res.json(statusMessage("Not authenticated", statusCodes.ERROR, 500));
+    res.json({ hardReroute: "/signin", message: statusMessage("Not authenticated", statusCodes.ERROR, 500) });
 }
 
 function checkNotAuthenticated(req, res, next) {
@@ -82,7 +83,8 @@ function checkNotAuthenticated(req, res, next) {
         return next();
     }
 
-    res.json(statusMessage({ code: "REROUTE", value: "/" }));
+    res.json({ hardReroute: "/" });
+    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
     // res.json({ message: "Error", value: "Is authenticated" });
 }
 
@@ -100,6 +102,7 @@ const validatePost = ({ username, title, body, author_id }, sessionUsersName, se
 }
 
 function tryGoNext(req, res, next) {
+    return next();
     if (process.env.NODE_ENV !== "production") return next();
 }
 

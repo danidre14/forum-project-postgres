@@ -3,9 +3,10 @@ const router = express.Router();
 
 const statusMessage = require("../util/statusMessage");
 
-router.get('/*', (req, res) =>
-    res.json(statusMessage({ code: "REROUTE", value: "/" }))
-);
+router.get('/*', (req, res) => {
+    res.json({ hardReroute: "/" });
+    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
+});
 
 router.delete('/', checkAuthenticated, (req, res) => {
     const { id: qId, username: qUsername } = req.query;
@@ -23,7 +24,8 @@ function checkAuthenticated(req, res, next) {
         return next();
     }
 
-    res.json(statusMessage({ code: "REROUTE", value: "/" }));
+    res.json({ hardReroute: "/" });
+    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
 }
 
 module.exports = router;

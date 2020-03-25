@@ -1,41 +1,61 @@
 @import "properFooterSize.css";
-*, *::before, *::after {
-    box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-pre {
-    font-family: inherit;
-    font-size: 1em;
+pre.errorMsg {
+  font-family: inherit;
+  font-size: 1em;
+  white-space: pre-wrap;
 }
 
 .mb-10 {
-    margin-bottom: 5rem!important;
+  margin-bottom: 5rem !important;
 }
 
 .mt-10 {
-    margin-top: 5rem!important;
+  margin-top: 5rem !important;
 }
 
 .pb-10 {
-    padding-bottom: 5rem!important;
+  padding-bottom: 5rem !important;
 }
 
 .pt-10 {
-    padding-top: 5rem!important;
+  padding-top: 5rem !important;
 }
 
 .bg-ghostwhite {
-    background-color: ghostwhite;
+  background-color: ghostwhite;
 }
 
 .breadcrumb {
-    background: #0000;
+  background: #0000;
 }
 
 .navbar .container {
-    justify-content: initial;
+  justify-content: initial;
 }
 
 .no-border {
-    border: none;
+  border: none;
+}
+
+.notification-container {
+  position: fixed;
+  right: 0;
+  bottom: 20px;
+  left: 0;
+  z-index: 1030;
+  max-width: inherit;
+  /* padding: inherit; */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.notification-container > .notification-box {
+  flex-grow: 1;
+  max-width: inherit;
 }

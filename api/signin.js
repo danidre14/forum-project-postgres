@@ -66,7 +66,8 @@ function checkNotAuthenticated(req, res, next) {
         return next();
     }
 
-    res.json(statusMessage({ code: "REROUTE", value: "/" }));
+    res.json({ hardReroute: "/" });
+    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
     // res.json({ message: "Error", value: "Is authenticated" });
 }
 
