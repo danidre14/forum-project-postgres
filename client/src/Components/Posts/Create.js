@@ -36,7 +36,8 @@ function PostCreate(props) {
 
         function postData() {
             setError(false);
-            makeRequest([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, ({ message: data }) => {
+            const { request, cancel } = makeRequest();
+            request([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, ({ message: data }) => {
                 if (data.message === "Success")
                     props.history.push(`/posts/view/${data.post_id}`);
                 else {

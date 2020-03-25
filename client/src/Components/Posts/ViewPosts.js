@@ -16,8 +16,9 @@ function PostView() {
     const [Error, setError] = useErrors(false);
 
     useEffect(() => {
+        const { request, cancel } = makeRequest();
         function getData() {
-            makeRequest(["/api/v1/posts", "get"], {}, (data) => {
+            request(["/api/v1/posts", "get"], {}, (data) => {
                 setPosts(data);
                 setIsLoading(false);
             }, (message) => {
@@ -25,6 +26,7 @@ function PostView() {
             })
         }
         getData();
+        return () => cancel();
     }, []);
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>

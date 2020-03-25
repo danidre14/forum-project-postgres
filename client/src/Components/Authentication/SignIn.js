@@ -30,7 +30,8 @@ function SignIn(props) {
 
         function postData() {
             setError(false);
-            makeRequest([`/api/v1/signin/`, "post"], post, ({ message: data }) => {
+            const { request, cancel } = makeRequest();
+            request([`/api/v1/signin/`, "post"], post, ({ message: data }) => {
                 if (data.message === "Success") {
                     const user = { username: data.username, id: data.id };
                     signInUser(user);

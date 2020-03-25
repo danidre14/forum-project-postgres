@@ -12,8 +12,9 @@ function ControlRoute({ component: Component, ...props }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    const { request, cancel } = makeRequest();
     function getData() {
-      makeRequest(
+      request(
         [`/api/v1${fullPath}`],
         {},
         () => {
@@ -30,6 +31,7 @@ function ControlRoute({ component: Component, ...props }) {
       );
     }
     getData();
+    return () => cancel();
   }, []);
 
   return (

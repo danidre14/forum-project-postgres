@@ -37,7 +37,8 @@ function CommentCreate(props) {
 
         function postData() {
             setError(false);
-            makeRequest([`/api/v1/comments/${post_id}`, "post"], { ...comment, username: user.username, author_id: user.id }, ({ message: data }) => {
+            const { request, cancel } = makeRequest();
+            request([`/api/v1/comments/${post_id}`, "post"], { ...comment, username: user.username, author_id: user.id }, ({ message: data }) => {
                 if (data.message === "Success") {
                     props.fetchPost();
                     showCommentCreate(false);

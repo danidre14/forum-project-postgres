@@ -16,8 +16,9 @@ function SignOut(props) {
     const { id, username } = user;
 
 
+    const { request, cancel } = makeRequest();
     function signOut() {
-        makeRequest([`/api/v1/signout${query}`, "delete"], {}, ({ message: data }) => {
+        request([`/api/v1/signout${query}`, "delete"], {}, ({ message: data }) => {
             if (data.message === "Success") {
                 // props.history.goBack();
                 props.history.push("/signin");
@@ -37,6 +38,7 @@ function SignOut(props) {
         else {
             props.history.goBack();
         }
+        return () => cancel();
     }, [])
 
     return (<>

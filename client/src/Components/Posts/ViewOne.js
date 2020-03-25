@@ -22,8 +22,9 @@ function PostViewOne(props) {
     const [isLoadingComments, setIsLoadingComments] = useState(true);
     const [Error, setError] = useErrors(false);
 
+    const { request, cancel } = makeRequest();
     function fetchPost() {
-        makeRequest([`/api/v1/posts/${id}`, "get"], {}, (data) => {
+        request([`/api/v1/posts/${id}`, "get"], {}, (data) => {
             setPost(data);
             // setPostTitle(data.title);
             setIsLoadingPost(false);
@@ -33,7 +34,7 @@ function PostViewOne(props) {
         })
     }
     function fetchCommentsPerPost() {
-        makeRequest([`/api/v1/comments/${post_id}`, "get"], {}, (data) => {
+        request([`/api/v1/comments/${post_id}`, "get"], {}, (data) => {
             setComments(data);
             setIsLoadingComments(false);
         }, (message) => {
@@ -42,6 +43,7 @@ function PostViewOne(props) {
     }
     useEffect(() => {
         fetchPost();
+        return () => cancel();
     }, []);
 
     const thePost = (isLoadingPost ? <LoadingAnim value="Posts" /> :

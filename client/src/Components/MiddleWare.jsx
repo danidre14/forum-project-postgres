@@ -7,9 +7,10 @@ import makeRequest from "./Utils/makeRequest";
 function MiddleWare({ history }) {
   const { signInUser, signOutUser, setNotifValue } = useContext(UserContext);
 
+  const { request, cancel } = makeRequest();
   const checkIfLoggedIn = () => {
     function fetchUser() {
-      makeRequest(
+      request(
         [`/api/v1/users?isLoggedIn=true`, "get"],
         {},
         data => {
@@ -28,8 +29,8 @@ function MiddleWare({ history }) {
   };
 
   useEffect(() => {
-    // setNotifValue("Hello", "soft");
     checkIfLoggedIn();
+    return () => cancel();
   }, [history.location.pathname]);
 
   return <></>;

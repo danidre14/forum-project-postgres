@@ -31,9 +31,9 @@ function SignUp(props) {
 
         function postData() {
             setError(false);
-            makeRequest([`/api/v1/signup/`, "post"], user, ({ message: data }) => {
+            const { request, cancel } = makeRequest();
+            request([`/api/v1/signup/`, "post"], user, ({ message: data }) => {
                 if (data.message === "Success") {
-                    console.log("Make notification", data.notif);
                     props.history.push(data.gotoUrl || `/signin/`);
                     setNotifValue(data.notif);
                 } else {
