@@ -24,7 +24,7 @@ function makeRequest() {
 		} catch (e) {
 			if (!axios.isCancel(e))
 				error(e);
-			console.log("Err try", e, e.message);
+			// console.log("Err try", e, e.message);
 		}
 	}
 	const cancel = () => {
