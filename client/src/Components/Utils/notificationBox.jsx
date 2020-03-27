@@ -16,7 +16,7 @@ function notificationBox(initialNotifValue) {
       <>
         {notifText && (
           <div className="notification-container">
-            <Toast className="d-flex justify-content-center align-items-center notification-box">
+            <Toast className="d-flex justify-content-center align-items-center notification-box bg-light">
               <div className="notification-text mr-auto">
                 <Toast.Body className="text-info">{notifText}</Toast.Body>
               </div>

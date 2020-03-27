@@ -30,7 +30,12 @@ function SignUp(props) {
 
         const user = { username, email, email2, password, password2 }
         const canProceed = validateInfomation(user);
-        if (canProceed !== true) return setError(canProceed);
+        if (canProceed !== true) {
+            const msg = [];
+            for (const i in canProceed)
+                if (canProceed[i] !== "") msg.push(canProceed[i]);
+            return setError(msg.join("\n"));
+        }
 
         function postData() {
             setError(false);
