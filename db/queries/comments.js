@@ -14,7 +14,8 @@ const Comments = {
         //knex("posts").where(data).first() : knex("posts").orderBy("id", "desc");
     },
     async update(data, comment) {
-        const [theComment] = await knex("comments").where(data).update(comment, "*");
+        const edited_at = knex.fn.now();
+        const [theComment] = await knex("comments").where(data).update({ ...comment, edited_at }, "*");
         return theComment;
     },
     delete(data) {

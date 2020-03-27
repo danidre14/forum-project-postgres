@@ -16,7 +16,6 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/create", (req, res) => {
-
     if (req.isAuthenticated()) {
         return res.json();
     }
@@ -45,28 +44,74 @@ router.post("/", rateLimiter.createPostLimiter, tryGoNext, checkAuthenticatedToM
     res.json(statusMessage({ message: "Success", post_id: post.id }));
 });
 
-router.put("/:id", tryGoNext, checkAuthenticatedToManipulatePost, tryGoNext, async (req, res) => {
+router.get("/edit/:id", async (req, res) => {
     const id = req.params.id;
+    if (!Validator.isNumber(id)) return res.json({ hardReroute: "/posts/view", message: statusMessage("Invalid ID", statusCodes.ERROR, 500) });
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    const post = await Posts.read({ id });
+    if (!post) return res.json({ hardReroute: `/posts/view/`, message: statusMessage("Post not found", statusCodes.ERROR, 404) });
 
-    const { username, title, body } = req.body;
-    let post = validatePost({ username, title, body });
 
-    if (!post) return res.json(statusMessage("Invalid post", statusCodes.ERROR, 500));
-    post = await Posts.update({ id }, post);
+    if (!checkAuthenticatedToEditPost(req)) {
+        return res.json({ hardReroute: `/posts/view/${id}`, message: statusMessage("Not Authenticated", statusCodes.ERROR, 500) });
+    }
 
-    res.json(statusMessage({ message: "Success", post }));
+    if (!checkAuthorizedUser(post, req.user)) {
+        return res.json({ hardReroute: `/posts/view/${id}`, message: statusMessage("Not Authorized", statusCodes.ERROR, 500) });
+    }
+
+    res.json(post);
 });
 
-router.delete("/:id", tryGoNext, checkAuthenticatedToManipulatePost, tryGoNext, async (req, res) => {
+router.put("/:id", tryGoNext, async (req, res) => {
+    const id = req.params.id;
+    if (!Validator.isNumber(id)) return res.json({ hardReroute: "/posts/view", message: statusMessage("Invalid ID", statusCodes.ERROR, 500) });
+
+    const originalPost = await Posts.read({ id });
+    if (!originalPost) return res.json({ hardReroute: `/posts/view/`, message: statusMessage("Post not found", statusCodes.ERROR, 404) });
+
+
+    if (!checkAuthenticatedToEditPost(req)) {
+        return res.json({ hardReroute: `/posts/view/${id}`, message: statusMessage("Not Authenticated", statusCodes.ERROR, 500) });
+    }
+
+    if (!checkAuthorizedUser(originalPost, req.user)) {
+        return res.json({ hardReroute: `/posts/view/${id}`, message: statusMessage("Not Authorized", statusCodes.ERROR, 500) });
+    }
+
+    const { username, title, body, author_id } = req.body;
+
+    let post = validatePost({ username, title, body, author_id }, req.user.username, req.user.id);
+    if (!post) return res.json(statusMessage({ notif: "Invalid post" }, statusCodes.ERROR, 500));
+    if (post.title === originalPost.title && post.body === originalPost.body) {
+        return res.json(statusMessage({ notif: "No changes detected." }));
+    }
+
+    post = await Posts.update({ id }, { title, body });
+
+    res.json(statusMessage({ message: "Success", notif: "Changes saved.", post_id: id }));
+});
+
+router.delete("/:id", tryGoNext, async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(id)) return res.json({ hardReroute: "/posts/view", message: statusMessage("Invalid ID", statusCodes.ERROR, 500) });
+
+    const post = await Posts.read({ id });
+    if (!post) return res.json(statusMessage({ notif: "Post not found." }));
+
+
+    if (!checkAuthenticatedToEditPost(req)) {
+        return res.json(statusMessage({ notif: "Cannot delete post. Not Authenticated." }));
+    }
+
+    if (!checkAuthorizedUser(post, req.user)) {
+        return res.json(statusMessage({ notif: "Cannot delete post. Not Authorized." }));
+    }
 
     await Posts.delete({ id });
 
-    res.json(statusMessage("Post deleted"));
+    res.json(statusMessage({ message: "Success", notif: "Post deleted.", gotoUrl: "/posts/view/" }));
 });
 
 
@@ -76,6 +121,13 @@ function checkAuthenticatedToManipulatePost(req, res, next) {
     }
 
     res.json({ hardReroute: "/signin", message: statusMessage("Not authenticated", statusCodes.ERROR, 500) });
+}
+
+function checkAuthenticatedToEditPost(req) {
+    return req.isAuthenticated();
+}
+function checkAuthorizedUser(post, user) {
+    return post.author_id === user.id;
 }
 
 function checkNotAuthenticated(req, res, next) {

@@ -4,9 +4,9 @@ import UserContext from "../../context/userContext";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
-import useErrors from "../Utils/useErrors.jsx";
+import useErrors from "../Utils/useErrors";
 import makeRequest from "../Utils/makeRequest";
-import useInputChange from "../Utils/useInputChange.jsx";
+import useInputChange from "../Utils/useInputChange";
 
 import { parseQueryString } from "../../util/utilities";
 

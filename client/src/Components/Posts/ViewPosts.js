@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors.jsx";
+import useErrors from "../Utils/useErrors";
 
-import DivLink from "../Utils/DivLink.jsx";
+import DivLink from "../Utils/DivLink";
 
 import Post from "./Post";
 import LoadingAnim from "../LoadingAnim";
+import TryCatch from "../Utils/TryCatch";
 
 import { Link } from "react-router-dom";
 import { Breadcrumb } from "react-bootstrap";
@@ -30,9 +31,13 @@ function PostView() {
     }, []);
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
-        <DivLink key={post.id} to={`/posts/view/${post.id}`}>
-            <Post classNames={`no-border shadow-sm`} key={post.id} post={post} canView={true} />
-        </DivLink>);
+        // <TryCatch key={post.id}><DivLink key={post.id} to={`/posts/view/${post.id}`}>
+        //     <Post classNames={`no-border shadow-sm`} key={post.id} post={post} canView={true} />
+        // </DivLink></TryCatch>
+        <TryCatch key={post.id}><DivLink to={`/posts/view/${post.id}`}>
+            <Post classNames={`no-border shadow-sm`} post={post} canView={true} />
+        </DivLink></TryCatch>
+    );
     return (
         <>
             {/* <Breadcrumb>

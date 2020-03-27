@@ -3,8 +3,8 @@ import React, { useContext } from "react";
 import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors.jsx";
-import useInputChange from "../Utils/useInputChange.jsx";
+import useErrors from "../Utils/useErrors";
+import useInputChange from "../Utils/useInputChange";
 
 
 // import utilities from "../../util/utilities";
@@ -17,7 +17,7 @@ import { Validator } from "../../util/utilities";
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
 function PostCreate(props) {
-    const { user } = useContext(UserContext);
+    const { user, setNotifValue } = useContext(UserContext);
 
     const [{ title, body }, handleInputChange] = useInputChange({
         title: "",
@@ -38,8 +38,10 @@ function PostCreate(props) {
             setError(false);
             const { request, cancel } = makeRequest();
             request([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, ({ message: data }) => {
-                if (data.message === "Success")
+                if (data.message === "Success") {
                     props.history.push(`/posts/view/${data.post_id}`);
+                } else if (data.notif)
+                    setNotifValue(data.notif, 5000);
                 else {
                     setError(`Cannot submit post: ${data}`);
                 }
@@ -60,6 +62,7 @@ function PostCreate(props) {
             </Breadcrumb> */}
             <Card className="mb-3 no-border shadow-sm">
                 <Card.Body>
+                    <Card.Title as="h2" className="mb-3">Create Post</Card.Title>
                     <Error />
                     <Form>
                         <Form.Group as={Row} controlId="formBasicUsername">

@@ -4,7 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import { Breadcrumb } from "react-bootstrap";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors.jsx";
+import useErrors from "../Utils/useErrors";
+import TryCatch from "../Utils/TryCatch";
 
 import Post from "./Post";
 import CreateComment from "../Comments/Create";
@@ -16,7 +17,6 @@ function PostViewOne(props) {
     const post_id = id;
 
     const [post, setPost] = useState({});
-    const [postTitle, setPostTitle] = useState("");
     const [comments, setComments] = useState([]);
     const [isLoadingPost, setIsLoadingPost] = useState(true);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
@@ -26,12 +26,11 @@ function PostViewOne(props) {
     function fetchPost() {
         request([`/api/v1/posts/${id}`, "get"], {}, (data) => {
             setPost(data);
-            // setPostTitle(data.title);
             setIsLoadingPost(false);
             fetchCommentsPerPost();
         }, (message) => {
             setError(`Cannot view post: ${message}`);
-        })
+        });
     }
     function fetchCommentsPerPost() {
         request([`/api/v1/comments/${post_id}`, "get"], {}, (data) => {
@@ -46,15 +45,17 @@ function PostViewOne(props) {
         return () => cancel();
     }, []);
 
-    const thePost = (isLoadingPost ? <LoadingAnim value="Posts" /> :
-        <>
+    const thePost = (isLoadingPost ? <LoadingAnim value="Post" /> :
+        <><TryCatch message="Can't load post.">
             <Post classNames={`no-border shadow-sm`} post={post} canView={false}>
                 <hr />
                 <CreateComment post_id={id} fetchPost={fetchPost} />
-            </Post>
+            </Post></TryCatch>
         </>);
 
-    const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment => <Comment classNames={`no-border shadow-sm`} key={comment.id} comment={{ ...comment, post_id }} />);
+    const Comments = isLoadingComments ? <LoadingAnim value="Comments" /> : comments.map(comment =>
+        <TryCatch key={comment.id} message="Can't load comment."><Comment classNames={`no-border shadow-sm`} comment={{ ...comment, post_id }} fetchPost={fetchPost} />
+        </TryCatch>);
     return (
         <>
             {/* <Breadcrumb>

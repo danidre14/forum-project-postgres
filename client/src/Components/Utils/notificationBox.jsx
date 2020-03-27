@@ -1,44 +1,32 @@
 import React, { useState } from "react";
 
-import { Alert, Toast } from "react-bootstrap";
+import { Toast, Button, Row, Col } from "react-bootstrap";
+import { X as XIcon } from "react-bootstrap-icons";
 
 function notificationBox(initialNotifValue) {
   const [notifText, setNotifText] = useState(initialNotifValue);
 
   const setTextValue = (val, time) => {
     setNotifText(val);
-    setTimeout(() => setNotifText(false), time || 20000);
+    setTimeout(() => setNotifText(false), time || 10000);
   };
 
   function NotifBox() {
-    const [hovering, setHovering] = useState(false);
-
-    var hoverStyle;
-    if (hovering) {
-      hoverStyle = { cursor: "pointer" };
-    }
-
-    function toggleHover() {
-      setHovering(!hovering);
-    }
-
     return (
       <>
         {notifText && (
-          <div
-            style={hoverStyle}
-            onMouseEnter={toggleHover}
-            onMouseLeave={toggleHover}
-            className="d-flex justify-content-center align-items-center notification-container"
-          >
-            <Toast
-              className="notification-box"
-              onClick={() => setNotifText(false)}
-            >
-              {/* <Toast.Header>
-                <strong className="mr-auto">Notification</strong>
-              </Toast.Header> */}
-              <Toast.Body className="text-info">{notifText}</Toast.Body>
+          <div className="notification-container">
+            <Toast className="d-flex justify-content-center align-items-center notification-box">
+              <div className="notification-text mr-auto">
+                <Toast.Body className="text-info">{notifText}</Toast.Body>
+              </div>
+              <Button
+                variant="link"
+                className="p-0"
+                onClick={() => setNotifText(false)}
+              >
+                <XIcon size="32" />
+              </Button>
             </Toast>
           </div>
         )}

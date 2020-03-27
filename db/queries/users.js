@@ -21,7 +21,8 @@ const Users = {
         return theUser;
     },
     async update(data, user) {
-        const [theUser] = await knex("users").where(data).update(user, "*");
+        const edited_at = knex.fn.now();
+        const [theUser] = await knex("users").where(data).update({ ...user, edited_at }, "*");
         return theUser;
     },
     delete(data) {

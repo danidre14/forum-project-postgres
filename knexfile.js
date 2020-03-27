@@ -4,15 +4,15 @@ if (process.env.NODE_ENV !== "production") {
 
 module.exports = {
   development: {
-    client: 'pg',
+    client: "pg",
     connection: process.env.DATABASE_URL_DEV
   },
   test: {
-    client: 'pg',
+    client: "pg",
     connection: process.env.DATABASE_URL_TEST
   },
   production: {
-    client: 'pg',
+    client: "pg",
     connection: process.env.DATABASE_URL
   },
   onUpdateTrigger: table => `

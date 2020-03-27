@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
-import useErrors from "../Utils/useErrors.jsx";
+import useErrors from "../Utils/useErrors";
 import makeRequest from "../Utils/makeRequest";
-import useInputChange from "../Utils/useInputChange.jsx";
+import useInputChange from "../Utils/useInputChange";
 
 function SignUp(props) {
     const { setNotifValue } = useContext(UserContext);
@@ -26,8 +26,9 @@ function SignUp(props) {
         if (username === "" || email === "" || email2 === "" || password === "" || password2 === "") return;
         e.preventDefault();
 
-        const user = { username, email, email2, password, password2 }//validatePost({ username, title, body });
-        // if (!post) return setError("Invalid post");
+        const user = { username, email, email2, password, password2 }
+        const canProceed = validateInfomation(user);
+        if (canProceed !== true) return setError(canProceed);
 
         function postData() {
             setError(false);
@@ -35,8 +36,11 @@ function SignUp(props) {
             request([`/api/v1/signup/`, "post"], user, ({ message: data }) => {
                 if (data.message === "Success") {
                     props.history.push(data.gotoUrl || `/signin/`);
-                    setNotifValue(data.notif);
-                } else {
+                    if (data.notif)
+                        setNotifValue(data.notif);
+                } else if (data.notif)
+                    setNotifValue(data.notif, 5000);
+                else {
                     if (typeof data === "string") {
                         setError(data);
                     } else {
@@ -151,16 +155,83 @@ function SignUp(props) {
     );
 }
 
-const validateForm = ({ name, email, password }) => {
-    const validTitle = Validator.isString(title) && Validator.isLength(title, { min: 1, max: 256 });
-    const validBody = Validator.isString(body) && Validator.isLength(body, { min: 1, max: 2048 });
-    const post = {}
-    if (validTitle && validBody) {
-        post.title = title;
-        post.body = body;
-    } else return false;
-    if (username && Validator.isLength(username, { min: 1, max: 64 })) post.username = username;
-    return post;
+function validateInfomation(info) {
+    let error = false;
+
+    //username validation
+    const username = info.username;
+    let uMessage = "";
+    if (username.length < 4 || username.length > 15) {
+        uMessage += "-Username must be 4-15 characters long";
+        error = true;
+    } else {
+        if (username.charAt(0).match(/^[a-z]+$/ig) === null) {
+            uMessage += "-Username must start with a letter\n";
+            error = true;
+        } else if (username.match(/^[a-z][a-z\d]+$/ig) === null) {
+            uMessage += "-Symbols/Spaces not allowed in username";
+            error = true;
+        }
+    }
+
+    //password validation
+    const pName = info.password;
+    let pMessage = "";
+    if (pName.length < 8) {
+        pMessage += "-Password must be 8 or more characters\n";
+        error = true;
+    }
+    // if(pName.match(/^[a-z\d]+$/ig) === null) {
+    //     pMessage += "-Password cannot contain symbols or spaces\n";
+    //     error = true;
+    // }
+    if (pName.search(/\d/) === -1) {
+        pMessage += "-Password must contain at least one number\n";
+        error = true;
+    }
+    if (pName.search(/[A-Z]/) === -1) {
+        pMessage += "-Password must contain at least one uppercase letter";
+        error = true;
+    }
+    //re-entered password
+    const p2Name = info.password2;
+    let p2Message = "";
+    if (pName !== p2Name) {
+        p2Message += "-Passwords do not match";
+        error = true;
+    }
+
+    //email validation
+    const email = info.email;
+    let eMessage = "";
+    if (Validator.isString(email) && email.trim() === "") {
+        eMessage += "-Missing email address";
+        error = true;
+    } else if (!Validator.isEmail(email)) {
+        eMessage += "-Unexpected email address";
+        error = true;
+    }
+
+    //re-entered email
+    const email2 = info.email2;
+    let e2Message = "";
+    if (email !== email2) {
+        e2Message += "-Emails do not match";
+        error = true;
+    }
+
+    //redirect if needed
+    if (error) {
+        return {
+            uMessage,
+            pMessage,
+            p2Message,
+            eMessage,
+            e2Message
+        }
+    }
+
+    return true;
 }
 
 export default SignUp;

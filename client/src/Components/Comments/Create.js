@@ -3,8 +3,8 @@ import React, { useState, useContext } from "react";
 import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors.jsx";
-import useInputChange from "../Utils/useInputChange.jsx";
+import useErrors from "../Utils/useErrors";
+import useInputChange from "../Utils/useInputChange";
 
 
 // import utilities from "../../util/utilities";
@@ -25,7 +25,7 @@ function CommentCreate(props) {
     const [Error, setError] = useErrors(false);
 
     const { post_id } = props;
-    const { user } = useContext(UserContext);
+    const { user, setNotifValue } = useContext(UserContext);
 
     const createComment = (e) => {
         if (body === "") return;
@@ -42,7 +42,9 @@ function CommentCreate(props) {
                 if (data.message === "Success") {
                     props.fetchPost();
                     showCommentCreate(false);
-                } else
+                } else if (data.notif)
+                    setNotifValue(data.notif, 5000);
+                else
                     setError(`Cannot post comment: ${data}`);
             }, (message) => {
                 setError(`Cannot post comment: ${message}`);

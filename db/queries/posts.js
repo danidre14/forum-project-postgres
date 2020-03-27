@@ -13,7 +13,8 @@ const Posts = {
         //knex("posts").where(data).first() : knex("posts").orderBy("id", "desc");
     },
     async update(data, post) {
-        const [thePost] = await knex("posts").where(data).update(post, "*");
+        const edited_at = knex.fn.now();
+        const [thePost] = await knex("posts").where(data).update({ ...post, edited_at }, "*");
         return thePost;
     },
     delete(data) {

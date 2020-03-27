@@ -48,6 +48,7 @@ router.post("/:post_id", rateLimiter.createCommentLimiter, tryGoNext, checkAuthe
     res.json(statusMessage({ message: "Success", comment_id: comment.id }));
 });
 
+/*
 router.put("/:id", tryGoNext, checkAuthenticatedToManipulateComment, async (req, res) => {
 
     const id = req.params.id;
@@ -63,16 +64,28 @@ router.put("/:id", tryGoNext, checkAuthenticatedToManipulateComment, async (req,
     res.json(statusMessage({ message: "Success", comment_id: comment.id }));
 
 });
+*/
 
-router.delete("/:id", tryGoNext, checkAuthenticatedToManipulateComment, async (req, res) => {
-
+router.delete("/:id", tryGoNext, async (req, res) => {
     const id = req.params.id;
 
-    if (!Validator.isNumber(id)) return res.json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
+    if (!Validator.isNumber(id)) return res.json({ hardReroute: "/posts/view", message: statusMessage("Invalid ID", statusCodes.ERROR, 500) });
+
+    const comment = await Comments.read({ id });
+    if (!comment) return res.json(statusMessage({ notif: "Comment not found." }));
+
+
+    if (!req.isAuthenticated()) {
+        return res.json(statusMessage({ notif: `Cannot delete comment. Not authenticated.` }));
+    }
+
+    if (!checkAuthorizedUser(comment, req.user)) {
+        return res.json(statusMessage({ notif: `Cannot delete comment. Not authorized.` }));
+    }
 
     await Comments.delete({ id });
 
-    res.json(statusMessage("Comment deleted"));
+    res.json(statusMessage({ message: "Success", notif: "Comment deleted." }));
 });
 
 
@@ -82,6 +95,10 @@ function checkAuthenticatedToManipulateComment(req, res, next) {
     }
 
     res.json({ hardReroute: "/signin", message: statusMessage("Not authenticated", statusCodes.ERROR, 500) });
+}
+
+function checkAuthorizedUser(comment, user) {
+    return comment.author_id === user.id;
 }
 
 const validateComment = ({ username, body, author_id }, sessionUsersName, sessionUsersId) => {

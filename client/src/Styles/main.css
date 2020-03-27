@@ -1,14 +1,11 @@
 @import "properFooterSize.css";
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 pre.errorMsg {
   font-family: inherit;
   font-size: 1em;
-  white-space: pre-wrap;
 }
 
 .mb-10 {
@@ -55,7 +52,15 @@ pre.errorMsg {
   margin-right: auto;
 }
 
-.notification-container > .notification-box {
+.notification-container>.notification-box {
   flex-grow: 1;
   max-width: inherit;
+}
+
+.notification-container .notification-text {
+  min-width: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
 }

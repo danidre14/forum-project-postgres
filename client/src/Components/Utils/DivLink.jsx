@@ -18,19 +18,21 @@ function DivLink(props) {
       e.target.tagName.toLowerCase() === "button"
     )
       return;
-
     history.push(href);
   }
 
-  function toggleHover() {
-    setHovering(!hovering);
+  function startHover() {
+    setHovering(true);
+  }
+  function stopHover() {
+    setHovering(false);
   }
 
   return (
     <div
       style={linkStyle}
-      onMouseEnter={toggleHover}
-      onMouseLeave={toggleHover}
+      onMouseEnter={startHover}
+      onMouseLeave={stopHover}
       onClick={handleClick}
     >
       {props.children}

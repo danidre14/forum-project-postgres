@@ -63,9 +63,9 @@ const MarkDownToUp = function () {
             } else if (key === '#') {
                 string = `<h4>${checkInline(string.substring(1))}</h4>`;
             } else if (key.substr(0, 5) === '*****') {
-                string = `<div class="hr"></div>`;
+                string = `<br />`;
             } else if (key.substr(0, 5) === '-----') {
-                string = `<div class="br"></div>`;
+                string = `<hr />`;
             } else if (key === '-&gt;&gt;' || key === '--&gt;') {
                 string = `</ul>`;
             } else if (key === '-&gt;') {
