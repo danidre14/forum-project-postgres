@@ -66,6 +66,12 @@ function SignUp(props) {
 
     return (
         <>
+            <Breadcrumb>
+                <li className="breadcrumb-item">
+                    <Link to="/" className="text-info">Home</Link>
+                </li>
+                <Breadcrumb.Item active>Sign Up</Breadcrumb.Item>
+            </Breadcrumb>
             <Card className="mb-3 no-border shadow-sm">
                 <Card.Body>
                     <Card.Title as="h2" className="mb-3">Sign Up</Card.Title>

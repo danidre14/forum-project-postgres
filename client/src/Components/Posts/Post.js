@@ -3,9 +3,9 @@ import { formatRelative } from 'date-fns';
 
 import UserContext from "../../context/userContext";
 
-import { Card, Badge, Col, Row, Button } from "react-bootstrap";
-import { Pencil, Trash } from "react-bootstrap-icons";
-import { Link, withRouter } from "react-router-dom";
+import { Card, Badge, Button } from "react-bootstrap";
+import { Pencil, Trash, ChatDots, Eye, CircleFill } from "react-bootstrap-icons";
+import { withRouter } from "react-router-dom";
 
 import makeRequest from "../Utils/makeRequest";
 import MarkDownToUp from "../Utils/MarkDownToUp";
@@ -13,7 +13,7 @@ import MarkDownToUp from "../Utils/MarkDownToUp";
 function Post(props) {
     const { user, setNotifValue } = useContext(UserContext);
 
-    const { id, title, username, body, comment_count, author_id, created_at: date_created, edited_at: date_edited } = props.post;
+    const { id, title, username, body, comment_count, view_count, author_id, created_at: date_created, edited_at: date_edited } = props.post;
     const created_at = formatRelative(Date.parse(date_created), Date.now());
     const edited_at = formatRelative(Date.parse(date_edited), Date.now());
 
@@ -54,18 +54,27 @@ function Post(props) {
                         {postBody}
                     </div>
                     <hr />
-                    <div className="d-flex">
-                        <Card.Text className="mb-0 mr-auto">
-                            <Badge variant="info">{commentsText}</Badge>
+                    <div className="d-flex align-items-center">
+                        <Card.Text className="mb-0 mr-auto text-muted">
+                            {view_count} <Eye className="mr-3" />
+                            {comment_count} <ChatDots />
+                            {/* <Badge variant="info">{commentsText}</Badge> */}
                         </Card.Text>
-                        {user.id === author_id && !props.canView && <>
-                            <Button variant="link" className="p-0" onClick={editPost}>
-                                <Pencil />
-                            </Button>
-                            <Button variant="link" className="ml-3 p-0" onClick={deletePost}>
-                                <Trash />
-                            </Button>
-                        </>}
+                        {user.id === author_id ?
+                            (!props.canView ? <>
+                                <Button variant="link" className="p-0 text-muted" onClick={editPost}>
+                                    <Pencil />
+                                </Button>
+                                <Button variant="link" className="ml-3 p-0 text-muted" onClick={deletePost}>
+                                    <Trash />
+                                </Button>
+                            </>
+                                : <>
+                                    <Card.Text className="m-0 text-muted">
+                                        <CircleFill />
+                                    </Card.Text>
+                                </>
+                            ) : <></>}
                     </div>
 
                     {props.children}

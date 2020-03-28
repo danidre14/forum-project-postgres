@@ -1,24 +1,24 @@
 const knex = require("../knex");
 
 const Posts = {
-    async create(post) {
-        const [thePost] = await knex("posts").insert(post, "*");
+    async create(data) {
+        const [thePost] = await knex("posts").insert(data, "*");
         return thePost;
     },
-    read(data) {
-        return data ?
-            knex('posts').select('posts.*', { username: 'users.username' }).join('users', { 'users.id': 'posts.author_id' }).where(this.unAmbiguise(data, "posts")).first() :
+    read(wheres) {
+        return wheres ?
+            knex('posts').select('posts.*', { username: 'users.username' }).join('users', { 'users.id': 'posts.author_id' }).where(this.unAmbiguise(wheres, "posts")).first() :
             knex('posts').select('posts.*', { username: 'users.username' }).join('users', { 'users.id': 'posts.author_id' }).orderBy('id', 'desc');
 
-        //knex("posts").where(data).first() : knex("posts").orderBy("id", "desc");
+        //knex("posts").where(wheres).first() : knex("posts").orderBy("id", "desc");
     },
-    async update(data, post) {
+    async update(wheres, data) {
         const edited_at = knex.fn.now();
-        const [thePost] = await knex("posts").where(data).update({ ...post, edited_at }, "*");
+        const [thePost] = await knex("posts").where(wheres).update({ ...data, edited_at }, "*");
         return thePost;
     },
-    delete(data) {
-        return knex("posts").where(data).del();
+    delete(wheres) {
+        return knex("posts").where(wheres).del();
     },
     unAmbiguise(obj, name) {
         const newObj = {};

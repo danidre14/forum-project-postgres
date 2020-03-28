@@ -42,7 +42,7 @@ function Comment(props) {
                         <Card.Text className="mb-0 text-info mr-auto">{username || "anonymous"}</Card.Text>
                         <span className="text-muted">{created_at}</span>
                         {user.id === author_id &&
-                            <Button variant="link" className="ml-3 p-0" onClick={deleteComment}>
+                            <Button variant="link" className="ml-3 p-0 text-muted" onClick={deleteComment}>
                                 <Trash />
                             </Button>
                         }

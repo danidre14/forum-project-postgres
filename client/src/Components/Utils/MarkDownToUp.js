@@ -55,17 +55,17 @@ const MarkDownToUp = function () {
         string = string.replace(/</g, '&lt;');
         string = string.replace(/>/g, '&gt;');
         const checkType = function (string) {
-            const key = string.split(' ')[0] || '';
-            if (key === '###') {
-                string = `<h6>${checkInline(string.substring(3))}</h6>`;
-            } else if (key === '##') {
-                string = `<h5>${checkInline(string.substring(2))}</h5>`;
-            } else if (key === '#') {
-                string = `<h4>${checkInline(string.substring(1))}</h4>`;
-            } else if (key.substr(0, 5) === '*****') {
+            const key = string.split(' ').length > 1 ? (string.split(' ')[0] || '') : '';
+            if (string.substr(0, 5) === '*****') {
                 string = `<br />`;
-            } else if (key.substr(0, 5) === '-----') {
+            } else if (string.substr(0, 5) === '-----') {
                 string = `<hr />`;
+            } else if (key === '###') {
+                string = `<h5>${checkInline(string.substring(3))}</h5>`;
+            } else if (key === '##') {
+                string = `<h4>${checkInline(string.substring(2))}</h4>`;
+            } else if (key === '#') {
+                string = `<h3>${checkInline(string.substring(1))}</h3>`;
             } else if (key === '-&gt;&gt;' || key === '--&gt;') {
                 string = `</ul>`;
             } else if (key === '-&gt;') {

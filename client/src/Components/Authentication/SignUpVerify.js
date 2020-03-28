@@ -51,6 +51,15 @@ function SignUpVerify(props) {
 
     return (
         <>
+            <Breadcrumb>
+                <li className="breadcrumb-item">
+                    <Link to="/" className="text-info">Home</Link>
+                </li>
+                <li className="breadcrumb-item">
+                    <Link to="/signup/" className="text-info">Sign Up</Link>
+                </li>
+                <Breadcrumb.Item active>Verify</Breadcrumb.Item>
+            </Breadcrumb>
             <Card className="mb-3 shadow-sm">
                 <Card.Body>
                     <Card.Title as="h2" className="mb-3">Verify Account</Card.Title>

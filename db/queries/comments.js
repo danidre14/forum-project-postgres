@@ -1,28 +1,28 @@
 const knex = require("../knex");
 
 const Comments = {
-    async create(comment) {
-        const [theComment] = await knex("comments").insert(comment, "*");
+    async create(data) {
+        const [theComment] = await knex("comments").insert(data, "*");
         return theComment;
     },
-    read(data) {
-        return data ?
-            knex('comments').select('comments.*', { username: 'users.username' }).join('users', { 'users.id': 'comments.author_id' }).where(this.unAmbiguise(data, "comments")).first() :
+    read(wheres) {
+        return wheres ?
+            knex('comments').select('comments.*', { username: 'users.username' }).join('users', { 'users.id': 'comments.author_id' }).where(this.unAmbiguise(wheres, "comments")).first() :
             knex('comments').select('comments.*', { username: 'users.username' }).join('users', { 'users.id': 'comments.author_id' });
 
-        //knex("comments").where(data).first() : knex("comments");
-        //knex("posts").where(data).first() : knex("posts").orderBy("id", "desc");
+        //knex("comments").where(wheres).first() : knex("comments");
+        //knex("posts").where(wheres).first() : knex("posts").orderBy("id", "desc");
     },
-    async update(data, comment) {
+    async update(wheres, data) {
         const edited_at = knex.fn.now();
-        const [theComment] = await knex("comments").where(data).update({ ...comment, edited_at }, "*");
+        const [theComment] = await knex("comments").where(wheres).update({ ...data, edited_at }, "*");
         return theComment;
     },
-    delete(data) {
-        return knex("comments").where(data).del();
+    delete(wheres) {
+        return knex("comments").where(wheres).del();
     },
-    getFromPost(data) {
-        return knex("comments").select('comments.*', { username: 'users.username' }).join('users', { 'users.id': 'comments.author_id' }).where(this.unAmbiguise(data, "comments")).orderBy("id", "desc").limit(8);
+    getFromPost(wheres) {
+        return knex("comments").select('comments.*', { username: 'users.username' }).join('users', { 'users.id': 'comments.author_id' }).where(this.unAmbiguise(wheres, "comments")).orderBy("id", "desc").limit(8);
     },
     unAmbiguise(obj, name) {
         const newObj = {};

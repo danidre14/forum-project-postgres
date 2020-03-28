@@ -31,21 +31,20 @@ function PostView() {
     }, []);
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
-        // <TryCatch key={post.id}><DivLink key={post.id} to={`/posts/view/${post.id}`}>
-        //     <Post classNames={`no-border shadow-sm`} key={post.id} post={post} canView={true} />
-        // </DivLink></TryCatch>
         <TryCatch key={post.id}><DivLink to={`/posts/view/${post.id}`}>
             <Post classNames={`no-border shadow-sm`} post={post} canView={true} />
         </DivLink></TryCatch>
     );
     return (
         <>
-            {/* <Breadcrumb>
-                <Breadcrumb.Item>
-                    <Link to="/" className="text-info">Home</Link>
-                </Breadcrumb.Item>
+            <Breadcrumb>
+                <li className="breadcrumb-item">
+                    <Link to="/" className="text-info">
+                        Home
+                    </Link>
+                </li>
                 <Breadcrumb.Item active>Posts</Breadcrumb.Item>
-            </Breadcrumb> */}
+            </Breadcrumb>
             <Error />
             {Posts}
         </>

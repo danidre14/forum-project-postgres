@@ -1,12 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors";
 import useInputChange from "../Utils/useInputChange";
+
+import MDTUVPost from "./MDTUVPost";
 
 import LoadingAnim from "../LoadingAnim";
 
@@ -72,13 +74,19 @@ function PostEdit(props) {
 
     return (
         <>
-            {/* <Breadcrumb>
-                <Breadcrumb.Item>
+            <Breadcrumb>
+                <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active>Create</Breadcrumb.Item>
-            </Breadcrumb> */}
-            {isLoadingPost ? <LoadingAnim value="Post" /> :
+                </li>
+                <li className="breadcrumb-item">
+                    <Link to="/posts/view/" className="text-info">Posts</Link>
+                </li>
+                <li className="breadcrumb-item">
+                    <Link to={`/posts/view/${id}`} className="text-info">{originalPost.title || id}</Link>
+                </li>
+                <Breadcrumb.Item active>Edit</Breadcrumb.Item>
+            </Breadcrumb>
+            {isLoadingPost ? <LoadingAnim value="Post" /> : <>
                 <Card className="mb-3 no-border shadow-sm">
                     <Card.Body>
                         <Card.Title as="h2" className="mb-3">Edit Post</Card.Title>
@@ -133,7 +141,8 @@ function PostEdit(props) {
                         </Form>
                     </Card.Body>
                 </Card>
-            }
+                <MDTUVPost post={{ title, body, username: user.username }} />
+            </>}
         </>
     )
 }

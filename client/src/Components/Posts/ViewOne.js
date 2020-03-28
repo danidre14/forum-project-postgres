@@ -23,8 +23,8 @@ function PostViewOne(props) {
     const [Error, setError] = useErrors(false);
 
     const { request, cancel } = makeRequest();
-    function fetchPost() {
-        request([`/api/v1/posts/${id}`, "get"], {}, (data) => {
+    function fetchPost(str) {
+        request([`/api/v1/posts${str || ""}/${id}`, "get"], {}, (data) => {
             setPost(data);
             setIsLoadingPost(false);
             fetchCommentsPerPost();
@@ -41,7 +41,7 @@ function PostViewOne(props) {
         });
     }
     useEffect(() => {
-        fetchPost();
+        fetchPost("/view");
         return () => cancel();
     }, []);
 
@@ -58,15 +58,15 @@ function PostViewOne(props) {
         </TryCatch>);
     return (
         <>
-            {/* <Breadcrumb>
-                <Breadcrumb.Item>
+            <Breadcrumb>
+                <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                    <Link to="/posts/view" className="text-info">Posts</Link>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active>{postTitle}</Breadcrumb.Item>
-            </Breadcrumb> */}
+                </li>
+                <li className="breadcrumb-item">
+                    <Link to="/posts/view/" className="text-info">Posts</Link>
+                </li>
+                <Breadcrumb.Item active>{post.title || id}</Breadcrumb.Item>
+            </Breadcrumb>
             <Error />
             {thePost}
             {!isLoadingPost && Comments}

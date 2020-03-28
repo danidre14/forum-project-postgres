@@ -6,14 +6,11 @@ import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors";
 import useInputChange from "../Utils/useInputChange";
 
+import MDTUVPost from "./MDTUVPost";
 
-// import utilities from "../../util/utilities";
-// const { Validator } = utilities;
 import { Validator } from "../../util/utilities";
-// const { Validator } = require("../../util/utilities");
-// const Validator = { ...require("validator"), ...require("../../util/utilities") };
 
-
+import { Link } from "react-router-dom";
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
 function PostCreate(props) {
@@ -54,12 +51,12 @@ function PostCreate(props) {
 
     return (
         <>
-            {/* <Breadcrumb>
-                <Breadcrumb.Item>
+            <Breadcrumb>
+                <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>
-                </Breadcrumb.Item>
+                </li>
                 <Breadcrumb.Item active>Create</Breadcrumb.Item>
-            </Breadcrumb> */}
+            </Breadcrumb>
             <Card className="mb-3 no-border shadow-sm">
                 <Card.Body>
                     <Card.Title as="h2" className="mb-3">Create Post</Card.Title>
@@ -114,6 +111,7 @@ function PostCreate(props) {
                     </Form>
                 </Card.Body>
             </Card>
+            <MDTUVPost post={{ title, body, username: user.username }} />
         </>
     )
 }

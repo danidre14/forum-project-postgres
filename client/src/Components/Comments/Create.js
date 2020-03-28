@@ -6,11 +6,9 @@ import makeRequest from "../Utils/makeRequest";
 import useErrors from "../Utils/useErrors";
 import useInputChange from "../Utils/useInputChange";
 
+import MDTUVComment from "./MDTUVComment";
 
-// import utilities from "../../util/utilities";
-// const { Validator } = utilities;
 import { Validator } from "../../util/utilities";
-// const Validator = { ...require("validator"), ...require("../../util/utilities") };
 
 import { Link } from "react-router-dom";
 
@@ -71,7 +69,7 @@ function CommentCreate(props) {
                     <p>Only users can post comments. <Link to="/signin"> Sign in</Link> or <Link to="/signup"> sign up</Link> to comment on this post.</p>
                     <Button variant="info" onClick={() => { showCommentCreate(false); setError(false) }}>
                         Cancel
-                        </Button>
+                    </Button>
                 </>
             )
         }
@@ -84,7 +82,6 @@ function CommentCreate(props) {
                     <Form.Group as={Row} controlId="formBasicUsername">
                         <Form.Label column sm="auto">Username</Form.Label>
                         <Col>
-
                             <InputGroup size="sm">
                                 <InputGroup.Prepend >
                                     <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
@@ -121,6 +118,8 @@ function CommentCreate(props) {
                         </Button>
                     </ButtonToolbar>
                 </Form>
+
+                <MDTUVComment comment={{ body, username: user.username }} />
 
             </>
         )

@@ -1,25 +1,25 @@
 const knex = require("../knex");
 
 const Tokens = {
-    async create(token) {
-        const [theToken] = await knex("tokens").insert(token, "*");
+    async create(data) {
+        const [theToken] = await knex("tokens").insert(data, "*");
         return theToken;
     },
-    async update(data, token) {
-        const [theToken] = await knex("tokens").where(data).update(token, "*");
+    async update(wheres, data) {
+        const [theToken] = await knex("tokens").where(wheres).update(data, "*");
         return theToken;
     },
-    delete(data) {
-        return knex("tokens").where(data).del();
+    delete(wheres) {
+        return knex("tokens").where(wheres).del();
     },
-    async findAll(data = {}) {
+    async findAll(wheres = {}) {
         await knex.raw(`DELETE FROM tokens WHERE created_at < NOW() - INTERVAL '2 hours';`);
-        const token = await knex("tokens").where(data);
+        const token = await knex("tokens").where(wheres);
         return token;
     },
-    async findOne(data = {}) {
+    async findOne(wheres = {}) {
         await knex.raw(`DELETE FROM tokens WHERE created_at < NOW() - INTERVAL '2 hours';`);
-        const token = await knex("tokens").where(data).first();
+        const token = await knex("tokens").where(wheres).first();
         return token;
     }
 }
