@@ -57,7 +57,7 @@ function Post(props) {
                     <div className="d-flex align-items-center">
                         <Card.Text className="mb-0 mr-auto text-muted">
                             {view_count} <Eye className="mr-3" />
-                            {comment_count} <ChatDots />
+                            {comment_count || 0} <ChatDots />
                             {/* <Badge variant="info">{commentsText}</Badge> */}
                         </Card.Text>
                         {user.id === author_id ?
