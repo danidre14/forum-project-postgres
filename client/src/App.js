@@ -23,7 +23,7 @@ import SignOut from "./Components/Authentication/SignOut";
 
 import TryCatch from "./Components/Utils/TryCatch";
 import Header from "./Components/Header";
-import NotificationBox from "./Components/Utils/NotificationBox";
+import NotificationBox from "./Components/Utils/NotificationsBox";
 import ScrollToTopButton from "./Components/Utils/ScrollToTop";
 import Footer from "./Components/Footer";
 
