@@ -99,7 +99,7 @@ router.put("/:id", tryGoNext, async (req, res) => {
         return res.json(statusMessage({ notif: "No changes detected." }));
     }
 
-    post = await Posts.update({ id }, { title, body });
+    post = await Posts.update({ id }, { title, body }, true);
 
     res.json(statusMessage({ message: "Success", notif: "Changes saved.", post_id: id }));
 });

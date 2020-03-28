@@ -12,14 +12,15 @@ const Posts = {
             const adminPosts = knex('posts').select('posts.*', { username: 'users.username' }).where('posts.author_id', 2).join('users', { 'users.id': 'posts.author_id' });
             const otherPosts = knex('posts').select('posts.*', { username: 'users.username' }).where('posts.author_id', '<>', 2).join('users', { 'users.id': 'posts.author_id' }).orderBy('id', 'desc');
 
-            return adminPosts.unionAll([otherPosts]);
+            return adminPosts.unionAll([otherPosts], true);
         }
         //knex('posts').select('posts.*', { username: 'users.username' }).join('users', { 'users.id': 'posts.author_id' }).orderBy('id', 'desc');
         //knex("posts").where(wheres).first() : knex("posts").orderBy("id", "desc");
     },
-    async update(wheres, data) {
+    async update(wheres, data, incEdit) {
         const edited_at = knex.fn.now();
-        const [thePost] = await knex("posts").where(wheres).update({ ...data, edited_at }, "*");
+        const info = incEdit ? { ...data, edited_at } : data;
+        const [thePost] = await knex("posts").where(wheres).update(info, "*");
         return thePost;
     },
     delete(wheres) {

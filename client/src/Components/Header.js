@@ -27,7 +27,7 @@ function Header() {
     const queryObj = parseQueryObject({ id: userID, username: username });
     return (
         <header>
-            <Navbar expanded={expanded} bg="info" variant="dark" expand="md" fixed="top" onClick={onNavPressed} onToggle={onNavToggle}>
+            <Navbar expanded={expanded} bg="info" variant="dark" expand="md" fixed="topp" onClick={onNavPressed} onToggle={onNavToggle}>
                 <Container>
                     <Navbar.Toggle className="mr-3" aria-controls="main-navbar-nav" />
                     <Navbar.Brand as={Link} to="/" className="mr-auto">Dani-Smorum</Navbar.Brand>
