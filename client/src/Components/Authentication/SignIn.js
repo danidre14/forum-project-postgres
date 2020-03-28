@@ -6,13 +6,13 @@ import { Link } from "react-router-dom";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange";
 
 function SignIn(props) {
     const { signInUser, setNotifValue } = useContext(UserContext);
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
 
     const [{ usernameOrEmail, password }, handleInputChange] = useInputChange({
         usernameOrEmail: "",

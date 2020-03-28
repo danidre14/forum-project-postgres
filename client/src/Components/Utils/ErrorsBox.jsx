@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { Alert } from "react-bootstrap";
 
-function useErrors(initialErrorValue) {
+function ErrorsBox(initialErrorValue) {
   const [error, setError] = useState(initialErrorValue);
 
   function Error() {
@@ -29,4 +29,4 @@ function useErrors(initialErrorValue) {
   return [Error, setError];
 }
 
-export default useErrors;
+export default ErrorsBox;

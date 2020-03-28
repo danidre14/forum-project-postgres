@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import useInputChange from "../Utils/useInputChange";
 
 import MDTUVPost from "./MDTUVPost";
@@ -29,13 +29,13 @@ function PostEdit(props) {
     const [isLoadingPost, setIsLoadingPost] = useState(true);
 
     const [originalPost, setPost] = useState({});
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
     const { request, cancel } = makeRequest();
 
     function editPost(e) {
         if (title === "" || body === "") return;
         e.preventDefault();
-        if (!user.loggedIn) return setError("Log in to edit a post");
+        if (!user.signedIn) return setError("Sign In to edit a post");
 
         const post = validatePost({ title, body });
         if (!post) return setError("Invalid post");

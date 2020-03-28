@@ -28,7 +28,7 @@ function SignOut(props) {
                 props.history.goBack();
             }
         }, (message) => {
-            console.log("Error logging out: " + message);
+            console.log("Error signing out: " + message);
             props.history.goBack();
         });
     }

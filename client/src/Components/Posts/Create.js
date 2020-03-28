@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import useInputChange from "../Utils/useInputChange";
 
 import MDTUVPost from "./MDTUVPost";
@@ -21,12 +21,12 @@ function PostCreate(props) {
         body: ""
     });
 
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
 
     const createPost = (e) => {
         if (title === "" || body === "") return;
         e.preventDefault();
-        if (!user.loggedIn) return setError("Log in to create a post");
+        if (!user.signedIn) return setError("Sign In to create a post");
 
         const post = validatePost({ title, body });
         if (!post) return setError("Invalid post");

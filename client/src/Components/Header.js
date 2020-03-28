@@ -23,7 +23,7 @@ function Header() {
         setExpanded(expanded ? false : "expanded");
     }
 
-    const { id: userID, username, loggedIn } = user;
+    const { id: userID, username, signedIn } = user;
     const queryObj = parseQueryObject({ id: userID, username: username });
     return (
         <header>
@@ -31,17 +31,17 @@ function Header() {
                 <Container>
                     <Navbar.Toggle className="mr-3" aria-controls="main-navbar-nav" />
                     <Navbar.Brand as={Link} to="/" className="mr-auto">Dani-Smorum</Navbar.Brand>
-                    {loggedIn === true && <Navbar.Text className="ml-3">
+                    {signedIn === true && <Navbar.Text className="ml-3">
                         {username}
                     </Navbar.Text>}
                     <Navbar.Collapse id="main-navbar-nav">
                         <Nav className="ml-auto">
-                            {loggedIn === false ?
+                            {signedIn === false ?
                                 <>
                                     <Nav.Link as={Link} to="/signin/">Sign In</Nav.Link>
                                     <Nav.Link as={Link} to="/signup/">Sign Up</Nav.Link>
                                 </>
-                                : loggedIn === true ?
+                                : signedIn === true ?
                                     <>
                                         <Nav.Link as={Link} to="/posts/create/">Create Post</Nav.Link>
                                         <Nav.Link as={Link} to={`/signout?${queryObj}`}>Sign Out</Nav.Link>

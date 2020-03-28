@@ -11,6 +11,7 @@ const Posts = require("../db/queries/posts");
 
 router.get("/", async (req, res) => {
     const posts = await Posts.read();
+
     res.json(posts);
 });
 

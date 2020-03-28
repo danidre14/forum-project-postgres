@@ -43,19 +43,19 @@ router.get("/*", checkNotAuthenticated, (req, res) => { res.json() });
 router.post("/", checkNotAuthenticated, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
-            console.trace("Err1", err)
+            // console.trace("Err1", err)
             return next(err);
         }
         if (!user) {
-            console.log("Err2:", "User no exist");
+            // console.log("Err2:", "User no exist");
             return res.json(statusMessage(info.message, statusCodes.ERROR, 500));
         }
         req.logIn(user, loginErr => {
             if (loginErr) {
-                console.log("Err3", loginErr)
+                // console.log("Err3", loginErr)
                 return next(loginErr);
             }
-            console.log("Signed in:", user);
+            // console.log("Signed in:", user);
             return res.json(statusMessage({ message: "Success", username: user.username, id: user.id }));
         });
     })(req, res, next);

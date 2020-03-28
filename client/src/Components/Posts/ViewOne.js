@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { Breadcrumb } from "react-bootstrap";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import TryCatch from "../Utils/TryCatch";
 
 import Post from "./Post";
@@ -20,7 +20,7 @@ function PostViewOne(props) {
     const [comments, setComments] = useState([]);
     const [isLoadingPost, setIsLoadingPost] = useState(true);
     const [isLoadingComments, setIsLoadingComments] = useState(true);
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
 
     const { request, cancel } = makeRequest();
     function fetchPost(str) {

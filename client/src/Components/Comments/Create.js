@@ -3,7 +3,7 @@ import React, { useState, useContext } from "react";
 import UserContext from "../../context/userContext";
 
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import useInputChange from "../Utils/useInputChange";
 
 import MDTUVComment from "./MDTUVComment";
@@ -20,7 +20,7 @@ function CommentCreate(props) {
     });
 
     const [isShowingCreate, setIsShowingCreate] = useState(false);
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
 
     const { post_id } = props;
     const { user, setNotifValue } = useContext(UserContext);
@@ -28,7 +28,7 @@ function CommentCreate(props) {
     const createComment = (e) => {
         if (body === "") return;
         e.preventDefault();
-        if (!user.loggedIn) return setError("Sign in or sign up to comment on this post.");
+        if (!user.signedIn) return setError("Sign in or sign up to comment on this post.");
 
         const comment = validateComment({ body, post_id });
         if (!comment) return setError("Invalid comment");
@@ -63,7 +63,7 @@ function CommentCreate(props) {
     }
 
     if (isShowingCreate) {
-        if (!user.loggedIn) {
+        if (!user.signedIn) {
             return (
                 <>
                     <p>Only users can post comments. <Link to="/signin"> Sign in</Link> or <Link to="/signup"> sign up</Link> to comment on this post.</p>

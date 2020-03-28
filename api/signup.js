@@ -69,7 +69,7 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
             statusMessage({ message: "Success", notif: "Account verified. You may now sign in." })
         );
         // req.flash('outsert', {message: 'Account verified. You may now sign in.', note: true});
-        // res.redirect('../signin'); //Please log in
+        // res.redirect('../signin'); //Please sign in
 
     } catch (err) {
         console.log("Message1:", err.message);

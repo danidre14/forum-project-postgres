@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import makeRequest from "../Utils/makeRequest";
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 
 import DivLink from "../Utils/DivLink";
 
@@ -14,7 +14,7 @@ import { Breadcrumb } from "react-bootstrap";
 function PostView() {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
 
     useEffect(() => {
         const { request, cancel } = makeRequest();

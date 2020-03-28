@@ -25,7 +25,7 @@ function notificationBox(initialNotifValue) {
                 className="p-0"
                 onClick={() => setNotifText(false)}
               >
-                <XIcon size="28" />
+                <XIcon size="24" />
               </Button>
             </Toast>
           </div>

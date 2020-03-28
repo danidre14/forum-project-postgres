@@ -4,7 +4,7 @@ import UserContext from "../../context/userContext";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange";
 
@@ -12,7 +12,7 @@ import { parseQueryString } from "../../util/utilities";
 
 function SignUpVerify(props) {
     const { setNotifValue } = useContext(UserContext);
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
     const query = props.location.search;
     const { token } = parseQueryString(query);
 

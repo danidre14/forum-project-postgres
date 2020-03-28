@@ -8,13 +8,13 @@ import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-boot
 
 import { Validator } from "../../util/utilities";
 
-import useErrors from "../Utils/useErrors";
+import ErrorsBox from "../Utils/ErrorsBox";
 import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange";
 
 function SignUp(props) {
     const { setNotifValue } = useContext(UserContext);
-    const [Error, setError] = useErrors(false);
+    const [Error, setError] = ErrorsBox(false);
 
     const [{ username, email, email2, password, password2 }, handleInputChange] = useInputChange({
         username: "",
@@ -63,6 +63,8 @@ function SignUp(props) {
         }
         postData();
     }
+
+    throw new Error("Weeee");
 
     return (
         <>

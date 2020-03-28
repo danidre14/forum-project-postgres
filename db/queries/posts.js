@@ -5,14 +5,18 @@ const Posts = {
         const [thePost] = await knex("posts").insert(data, "*");
         return thePost;
     },
-    read(wheres) {
+    async read(wheres) {
         if (wheres) {
             return knex('posts').select('posts.*', { username: 'users.username' }).join('users', { 'users.id': 'posts.author_id' }).where(this.unAmbiguise(wheres, "posts")).first();
         } else {
-            const adminPosts = knex('posts').select('posts.*', { username: 'users.username' }).where('posts.author_id', 2).join('users', { 'users.id': 'posts.author_id' });
+            const adminPosts = knex('posts').select('posts.*', { username: 'users.username' }).where('posts.author_id', 2).join('users', { 'users.id': 'posts.author_id' }).orderBy('id', 'asc');
             const otherPosts = knex('posts').select('posts.*', { username: 'users.username' }).where('posts.author_id', '<>', 2).join('users', { 'users.id': 'posts.author_id' }).orderBy('id', 'desc');
 
-            return adminPosts.unionAll([otherPosts], true);
+            return knex.union(adminPosts, true).unionAll(otherPosts, true);
+            // return knex.raw('? union all ?', [adminPosts, otherPosts]);
+            // const result = await knex.raw('? union all ?;', [adminPosts, otherPosts]);
+            // return result.rows;
+            // return adminPosts.unionAll([otherPosts], true);
         }
         //knex('posts').select('posts.*', { username: 'users.username' }).join('users', { 'users.id': 'posts.author_id' }).orderBy('id', 'desc');
         //knex("posts").where(wheres).first() : knex("posts").orderBy("id", "desc");
