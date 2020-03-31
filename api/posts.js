@@ -54,7 +54,7 @@ router.post("/", rateLimiter.createPostLimiter, tryGoNext, checkAuthenticatedToM
     if (!post) return res.json(statusMessage("Invalid post", statusCodes.ERROR, 500));
     post = await Posts.create({ ...post, author_id });
 
-    res.json(statusMessage({ message: "Success", post_id: post.id }));
+    res.json(statusMessage({ message: "Success", notif: "Post created.", post_id: post.id }));
 });
 
 router.get("/edit/:id", async (req, res) => {

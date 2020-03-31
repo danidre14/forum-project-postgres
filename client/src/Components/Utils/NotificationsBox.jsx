@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Toast, Button, Row, Col } from "react-bootstrap";
 import { X as XIcon } from "react-bootstrap-icons";
+import Head from "./Head";
 
 function notificationBox(initialNotifValue) {
   const [notifText, setNotifText] = useState(initialNotifValue);
@@ -14,7 +15,8 @@ function notificationBox(initialNotifValue) {
   function NotifBox() {
     return (
       <>
-        {notifText && (
+        {notifText && (<>
+        <Head page={{ title: "You have a notification" }} />
           <div className="notification-container">
             <Toast className="d-flex justify-content-center align-items-center notification-box bg-light">
               <div className="notification-text mr-auto">
@@ -29,7 +31,7 @@ function notificationBox(initialNotifValue) {
               </Button>
             </Toast>
           </div>
-        )}
+        </>)}
       </>
     );
   }

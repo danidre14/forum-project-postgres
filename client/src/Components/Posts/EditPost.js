@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 
+import { Prompt } from "react-router";
 import { useParams, Link } from "react-router-dom";
 
 import UserContext from "../../context/userContext";
@@ -12,6 +13,7 @@ import MDTUVPost from "./MDTUVPost";
 
 import LoadingAnim from "../LoadingAnim";
 
+import Head from "../Utils/Head";
 
 import { Validator } from "../../util/utilities";
 
@@ -27,6 +29,8 @@ function PostEdit(props) {
         body: ""
     });
     const [isLoadingPost, setIsLoadingPost] = useState(true);
+    const [intervalID, setIntervalID] = useState(0);
+    const [sentPost, setSentPost] = useState(false);
 
     const [originalPost, setPost] = useState({});
     const [Error, setError] = ErrorsBox(false);
@@ -47,6 +51,7 @@ function PostEdit(props) {
             setError(false);
             request([`/api/v1/posts/${id}`, "put"], { ...post, username: user.username, author_id: user.id }, ({ message: data }) => {
                 if (data.message === "Success") {
+                    setSentPost(true);
                     props.history.push(`/posts/view/${data.post_id}`);
                     setNotifValue(data.notif || "Changes saved.", 5000);
                 } else {
@@ -60,7 +65,7 @@ function PostEdit(props) {
     }
     useEffect(() => {
         function fetchPost() {
-            request([`/api/v1/posts/${id}`, "get"], {}, (data) => {
+            request([`/api/v1/posts/${id}`], {}, (data) => {
                 setPost(data);
                 setState({ title: data.title, body: data.body });
                 setIsLoadingPost(false);
@@ -69,11 +74,37 @@ function PostEdit(props) {
             })
         }
         fetchPost();
-        return () => cancel();
+
+        let intervalId = setInterval(() => {
+            function pingServer() {
+                request([`/api/v1/ping`]);
+            }
+            pingServer();
+        }, 60 * 1000);
+        setIntervalID(intervalId);
+
+        return () => {
+            clearInterval(intervalID);
+            cancel();
+        }
     }, []);
+
+    useEffect(() => {
+        if (!sentPost&&(title !== (originalPost.title||"") || body !== (originalPost.body||""))) {
+            window.onbeforeunload = () => true;
+        } else {
+            window.onbeforeunload = undefined;
+        }
+        return () => window.onbeforeunload = undefined;
+    }, [sentPost, title, body]);
 
     return (
         <>
+        <Head page={{ title: "Edit Post", description: "Edit post on Dani-Smorum." }} />
+            <Prompt
+                when={!sentPost&&(title !== (originalPost.title||"") || body !== (originalPost.body||""))}
+                message='You have unsaved changes, are you sure you want to leave?'
+            />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>

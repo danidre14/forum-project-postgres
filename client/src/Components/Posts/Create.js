@@ -1,25 +1,56 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import UserContext from "../../context/userContext";
 
-import makeRequest from "../Utils/makeRequest";
 import ErrorsBox from "../Utils/ErrorsBox";
 import useInputChange from "../Utils/useInputChange";
+import Head from "../Utils/Head";
 
 import MDTUVPost from "./MDTUVPost";
 
 import { Validator } from "../../util/utilities";
 
 import { Link } from "react-router-dom";
+import { Prompt } from "react-router";
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
+
+import makeRequest from "../Utils/makeRequest";
 
 function PostCreate(props) {
     const { user, setNotifValue } = useContext(UserContext);
+    const [intervalID, setIntervalID] = useState(0);
+    const [sentPost, setSentPost] = useState(false);
 
     const [{ title, body }, handleInputChange] = useInputChange({
         title: "",
         body: ""
     });
+
+    useEffect(() => {
+        const { request, cancel } = makeRequest();
+        let intervalId = setInterval(() => {
+            function pingServer() {
+                request([`/api/v1/ping`]);
+            }
+            pingServer();
+        }, 20 * 60 * 1000);
+        setIntervalID(intervalId);
+
+
+        return () => {
+            clearInterval(intervalID);
+            cancel();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!sentPost&&(title !== "" || body !== "")) {
+            window.onbeforeunload = () => true;
+        } else {
+            window.onbeforeunload = undefined;
+        }
+        return () => window.onbeforeunload = undefined;
+    }, [sentPost, title, body]);
 
     const [Error, setError] = ErrorsBox(false);
 
@@ -36,7 +67,9 @@ function PostCreate(props) {
             const { request, cancel } = makeRequest();
             request([`/api/v1/posts/`, "post"], { ...post, username: user.username, author_id: user.id }, ({ message: data }) => {
                 if (data.message === "Success") {
+                    setSentPost(true);
                     props.history.push(`/posts/view/${data.post_id}`);
+                    setNotifValue(data.notif || "Post created.", 5000);
                 } else if (data.notif)
                     setNotifValue(data.notif, 5000);
                 else {
@@ -51,6 +84,11 @@ function PostCreate(props) {
 
     return (
         <>
+        <Head page={{ title: "Create Post", description: "Create a post on Dani-Smorum." }} />
+            <Prompt
+                when={!sentPost&&(title !== "" || body !== "")}
+                message='You have unsaved changes, are you sure you want to leave this page?'
+            />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>

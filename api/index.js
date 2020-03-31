@@ -9,6 +9,7 @@ const signupRoute = require("./signup");
 const signinRoute = require("./signin");
 const signoutRoute = require("./signout");
 const usersRoute = require("./users");
+const pingRoute = require("./ping");
 
 // CORS
 if (process.env.NODE_ENV !== "production") {
@@ -32,6 +33,7 @@ router.use("/signin/", signinRoute);
 router.use("/signout/", signoutRoute);
 router.use("/users/", usersRoute);
 router.use("/posts/", postsRoute);
+router.use("/ping/", pingRoute);
 router.use("*", (req, res) => res.status(404).json(statusMessage("No API found.", "error", 404)));
 
 module.exports = router;

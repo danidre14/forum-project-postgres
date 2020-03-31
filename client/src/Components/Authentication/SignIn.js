@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import UserContext from "../../context/userContext";
 
 import { Link } from "react-router-dom";
+import Head from "../Utils/Head";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
 
@@ -49,6 +50,7 @@ function SignIn(props) {
 
     return (
         <>
+        <Head page={{ title: "Sign In", description: "Sign in to Dani-Smorum." }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>

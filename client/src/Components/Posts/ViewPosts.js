@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import makeRequest from "../Utils/makeRequest";
 import ErrorsBox from "../Utils/ErrorsBox";
 
+import Head from "../Utils/Head";
+
 import DivLink from "../Utils/DivLink";
 
 import Post from "./Post";
@@ -31,12 +33,13 @@ function PostView() {
     }, []);
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
-        <TryCatch key={post.id}><DivLink to={`/posts/view/${post.id}`}>
-            <Post classNames={`no-border shadow-sm`} post={post} canView={true} />
-        </DivLink></TryCatch>
+        <TryCatch key={post.id}>
+            <Post classNames={`no-border shadow-sm`} post={post} canView={true} link={`/posts/view/${post.id}`} />
+        </TryCatch>
     );
     return (
         <>
+            <Head page={{ title: "Browse", description: "Browse posts on Dani Smorum." }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">

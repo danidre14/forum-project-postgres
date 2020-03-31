@@ -7,6 +7,7 @@ import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-boot
 import ErrorsBox from "../Utils/ErrorsBox";
 import makeRequest from "../Utils/makeRequest";
 import useInputChange from "../Utils/useInputChange";
+import Head from "../Utils/Head";
 
 import { parseQueryString } from "../../util/utilities";
 
@@ -51,6 +52,7 @@ function SignUpVerify(props) {
 
     return (
         <>
+        <Head page={{ title: "Verify Account", description: "Verify your Dani-Smorum account." }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>

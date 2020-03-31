@@ -18,6 +18,8 @@ function Comment(props) {
 
 
     function deleteComment() {
+        const conf = window.confirm("Are you sure you want to delete this comment?");
+        if (!conf) return;
         const { request, cancel } = makeRequest();
         function postData() {
             request([`/api/v1/comments/${id}`, "delete"], {}, ({ message: data }) => {

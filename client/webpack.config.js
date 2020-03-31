@@ -27,12 +27,18 @@ module.exports = {
       }, {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
+      }, {
+        test: /\.(svg|png|gif|jpg|ico)$/,
+        use: {
+            loader: "file-loader"
+        }
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html"
+      template: "./src/index.html",
+      favicon: './src/favicon.ico'
     })
   ]
 };

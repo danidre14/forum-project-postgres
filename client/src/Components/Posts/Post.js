@@ -3,8 +3,10 @@ import { formatRelative } from 'date-fns';
 
 import UserContext from "../../context/userContext";
 
+import DivLink from "../Utils/DivLink";
+
 import { Card, Badge, Button } from "react-bootstrap";
-import { Pencil, Trash, ChatDots, Eye, CircleFill } from "react-bootstrap-icons";
+import { Pencil, Trash, ChatDots, Eye } from "react-bootstrap-icons";
 import { withRouter } from "react-router-dom";
 
 import makeRequest from "../Utils/makeRequest";
@@ -22,11 +24,18 @@ function Post(props) {
     }
 
     function deletePost() {
+        const conf = window.confirm("Are you sure you want to delete this post?");
+        if (!conf) return;
         const { request, cancel } = makeRequest();
         function postData() {
             request([`/api/v1/posts/${id}`, "delete"], {}, ({ message: data }) => {
                 if (data.message === "Success") {
-                    props.history.push(data.gotoUrl || `/`);
+                    if(!props.canView)
+                        props.history.push(data.gotoUrl || `/`);
+                    else {
+                        props.history.replace("/refresh");
+                        props.history.replace("/");
+                    }
                     setNotifValue(data.notif || "Post deleted.", 2500);
                 } else {
                     if (data.notif) setNotifValue(data.notif, 2500);
@@ -41,11 +50,8 @@ function Post(props) {
     const postBody = MarkDownToUp().convert(body);
     const commentsText = (comment_count || 0) + (comment_count === 1 ? " comment" : " comments");
 
-    return (
-        <>
-            <Card className={`mb-3 ${props.classNames}`}>
-                <Card.Body>
-                    <Card.Title as="h3">{title}</Card.Title>
+    const mainPostContent = (<>
+    <Card.Title as="h3">{title}</Card.Title>
                     <Card.Subtitle className="mb-4 d-flex text-muted small">
                         <Card.Text className="mb-0 text-muted mr-auto">by <span className="text-info">{username || "anonymous"}</span>, {created_at}</Card.Text>
                         {date_created !== date_edited && <span className="text-muted font-italic">(edited)</span>}
@@ -53,6 +59,16 @@ function Post(props) {
                     <div className="mb-3">
                         {postBody}
                     </div>
+    </>)
+
+    return (
+        <>
+            <Card className={`mb-3 ${props.classNames}`}>
+                <Card.Body>
+                    {props.canView ? <DivLink to={props.link}>
+                        {mainPostContent}
+                        </DivLink> :
+                        mainPostContent}
                     <hr />
                     <div className="d-flex align-items-center">
                         <Card.Text className="mb-0 mr-auto text-muted">
@@ -60,21 +76,15 @@ function Post(props) {
                             {comment_count || 0} <ChatDots />
                             {/* <Badge variant="info">{commentsText}</Badge> */}
                         </Card.Text>
-                        {user.id === author_id ?
-                            (!props.canView ? <>
+                        {user.id === author_id &&
+                             <>
                                 <Button variant="link" className="p-0 text-muted" onClick={editPost}>
                                     <Pencil />
                                 </Button>
                                 <Button variant="link" className="ml-3 p-0 text-muted" onClick={deletePost}>
                                     <Trash />
                                 </Button>
-                            </>
-                                : <>
-                                    <Card.Text className="m-0 text-muted">
-                                        <CircleFill />
-                                    </Card.Text>
-                                </>
-                            ) : <></>}
+                            </>}
                     </div>
 
                     {props.children}

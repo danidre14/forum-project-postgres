@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
+import Head from "../Utils/Head";
+
 import { Breadcrumb } from "react-bootstrap";
 
 import makeRequest from "../Utils/makeRequest";
@@ -58,6 +60,7 @@ function PostViewOne(props) {
         </TryCatch>);
     return (
         <>
+        <Head page={{ title: (post.title || id), description: `View post${post.username? ` by ${post.username}` : ""}.` }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>

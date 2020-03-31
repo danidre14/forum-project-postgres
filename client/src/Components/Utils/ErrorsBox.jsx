@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { Alert } from "react-bootstrap";
+import Head from "./Head";
 
 function ErrorsBox(initialErrorValue) {
   const [error, setError] = useState(initialErrorValue);
@@ -11,7 +12,8 @@ function ErrorsBox(initialErrorValue) {
     }`;
     return (
       <>
-        {error && (
+        {error && (<>
+        <Head page={{ title: "Error" }} />
           <Alert
             className="no-border"
             variant="danger"
@@ -21,7 +23,7 @@ function ErrorsBox(initialErrorValue) {
             <Alert.Heading>Error!</Alert.Heading>
             <pre className="errorMsg">{errMsg}</pre>
           </Alert>
-        )}
+        </>)}
       </>
     );
   }
