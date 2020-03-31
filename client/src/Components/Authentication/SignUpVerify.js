@@ -1,5 +1,7 @@
 import React, { useEffect, useContext } from "react";
 
+import { Link } from "react-router-dom"
+
 import UserContext from "../../context/userContext";
 
 import { Card, Form, Col, Row, InputGroup, Button, Breadcrumb } from 'react-bootstrap';
@@ -52,7 +54,7 @@ function SignUpVerify(props) {
 
     return (
         <>
-        <Head page={{ title: "Verify Account", description: "Verify your Dani-Smorum account." }} />
+            <Head page={{ title: "Verify Account", description: "Verify your Dani-Smorum account." }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>
