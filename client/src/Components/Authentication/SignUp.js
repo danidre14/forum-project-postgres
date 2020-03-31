@@ -45,9 +45,9 @@ function SignUp(props) {
                 if (data.message === "Success") {
                     props.history.push(data.gotoUrl || `/signin/`);
                     if (data.notif)
-                        setNotifValue(data.notif);
+                        setNotifValue(data.notif, 10000);
                 } else if (data.notif)
-                    setNotifValue(data.notif, 5000);
+                    setNotifValue(data.notif, 10000);
                 else {
                     if (typeof data === "string") {
                         setError(data);
@@ -67,7 +67,7 @@ function SignUp(props) {
 
     return (
         <>
-        <Head page={{ title: "Sign Up", description: "Create an account on Dani-Smorum." }} />
+            <Head page={{ title: "Sign Up", description: "Create an account on Dani-Smorum." }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>

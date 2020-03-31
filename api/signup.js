@@ -37,8 +37,6 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
             return res.json(
                 statusMessage('The activation link does not exist, or may have expired.', statusCodes.ERROR, 500)
             );
-            // req.flash('outsert', {message: 'The activation link does not exist, or may have expired.'});
-            // return res.redirect('verify/resend'); //their token may have expired
         }
 
         //Check if token matches account email  
@@ -48,8 +46,6 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
             return res.json(
                 statusMessage('Username or email incorrect. Correct the information and try again, or sign up today.', statusCodes.ERROR, 500)
             );
-            // req.flash('outsert', {message: 'Unable to find an account with that email. Correct the information, or sign up today.'});
-            // return res.redirect('../signup'); //user does not exist
         }
 
         //Check if user is verified
@@ -58,8 +54,6 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
             return res.json(
                 statusMessage({ message: "Success", notif: "Account already verified. You can sign in." })
             );
-            // req.flash('outsert', {message: 'Account already verified. You can sign in.', note: true});
-            // return res.redirect('../signin'); //user already verified
         }
 
         //Verify user
@@ -68,16 +62,12 @@ router.post('/verify', checkNotAuthenticated, async (req, res) => {
         return res.json(
             statusMessage({ message: "Success", notif: "Account verified. You may now sign in." })
         );
-        // req.flash('outsert', {message: 'Account verified. You may now sign in.', note: true});
-        // res.redirect('../signin'); //Please sign in
 
     } catch (err) {
         console.log("Message1:", err.message);
         return res.json(
             statusMessage('An error has occured. Please try again, or contact support.', statusCodes.ERROR, 500)
         );
-        // req.flash('outsert', {message: 'An error has occured. Please try again, or contact support.'});
-        // res.redirect('../signup');
     }
 });
 
@@ -95,8 +85,6 @@ async function createUser(req, res) {
         if (process.env.NODE_ENV !== 'production' && !testEmail) {
             user.is_verified = 1; //verified by default if not in production
             await Users.create(user);
-            // req.flash('outsert', {message: `Development account ${user.email} created. Sign in with username ${user.username}.`, note: true});
-            // return res.redirect('/signin');
             console.log("Signed up", user);
             return res.json(
                 statusMessage({ message: "Success", notif: `Development account ${user.email} created. Sign in with username ${user.username}.`, gotoUrl: "/signin" })
@@ -112,15 +100,11 @@ async function createUser(req, res) {
 
         sendMail(mailOptions, user.email);
 
-        // req.flash('outsert', {message: `A token has been sent to ${user.email}. Check your email to verify your account.`});
-        // res.redirect('/signup/v');
         return res.json(
-            statusMessage({ message: "Success", notif: `A token has been sent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup" })
+            statusMessage({ message: "Success", notif: `A token has been sent to ${user.email}. Check your email to verify your account. Emails may take up to 10 minutes to reach your account.`, gotoUrl: "/signup" })
         );
     } catch (e) {
         console.log("Message2:", e.message);
-        // req.flash('outsert', {message: 'An error has occured. Please report this issue or try again.'});
-        // res.redirect('/signup');
         return res.json(
             statusMessage('An error has occured. Please report this issue or try again.', statusCodes.ERROR, 500)
         );
@@ -153,10 +137,6 @@ async function checkUserExists(req, res, next) {
 
         //if user verified
         if (user.is_verified) {
-            // req.flash('outsert', { message: 'Username unavailable.' });
-            // req.flash('bodyUname', req.body.username || '');
-            // req.flash('bodyEmail', req.body.email || '');
-            // return res.redirect('/signup');
             if (user.username === req.body.username)
                 return res.json(
                     statusMessage("Username unavailable.", statusCodes.ERROR, 500)
@@ -180,10 +160,8 @@ async function checkUserExists(req, res, next) {
 
             sendMail(mailOptions, user.email);
 
-            // req.flash('outsert', { message: `A token has been resent to ${user.email}. Check your email to verify your account.` });
-            // return res.redirect('/signup/v');
             return res.json(
-                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup" })
+                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account. Emails may take up to 10 minutes to reach your account.`, gotoUrl: "/signup" })
             );
         }
 
@@ -193,8 +171,6 @@ async function checkUserExists(req, res, next) {
         //look for username and email
         if (user.username === req.body.username && user.email === req.body.email) {//email exists
             //check email for verification token
-            // req.flash('outsert', { message: 'Account already registered. Check your email for the verification token.' });
-            // return res.redirect('/signin');
             return res.json(
                 statusMessage('Account already registered. Check your email for the verification token.')
             );
@@ -210,16 +186,12 @@ async function checkUserExists(req, res, next) {
 
             sendMail(mailOptions, user.email);
 
-            // req.flash('outsert', { message: `A token has been sent to ${user.email}. Check your email to verify your account.` });
-            // return res.redirect('/signup/v');
             return res.json(
-                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account.`, gotoUrl: "/signup" })
+                statusMessage({ message: "Success", notif: `A token has been resent to ${user.email}. Check your email to verify your account. Emails may take up to 10 minutes to reach your account.`, gotoUrl: "/signup" })
             );
         }
     } catch (e) {
         console.log("Message3:", e.message);
-        // req.flash('outsert', { message: 'Error Occurred.' });
-        // return res.redirect('/signup');
         return res.json(
             statusMessage("Error Occurred.", statusCodes.ERROR, 500)
         );
@@ -314,8 +286,6 @@ function checkNotAuthenticated(req, res, next) {
     }
 
     res.json({ hardReroute: "/" });
-    // res.json(statusMessage({ code: "REROUTE", value: "/" }));
-    // res.json({ message: "Error", value: "Is authenticated" });
 }
 
 function getMailOptions(username = 'User', email, host, token) {
