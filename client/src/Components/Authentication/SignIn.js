@@ -50,7 +50,7 @@ function SignIn(props) {
 
     return (
         <>
-        <Head page={{ title: "Sign In", description: "Sign in to Dani-Smorum." }} />
+            <Head page={{ title: "Sign In", description: "Sign in to Dani-Smorum." }} />
             <Breadcrumb>
                 <li className="breadcrumb-item">
                     <Link to="/" className="text-info">Home</Link>
@@ -87,7 +87,7 @@ function SignIn(props) {
                                 <Form.Control
                                     size="sm"
                                     type="password"
-                                    placeholder="Username"
+                                    placeholder="Password"
                                     name="password"
                                     value={password}
                                     required={true}
