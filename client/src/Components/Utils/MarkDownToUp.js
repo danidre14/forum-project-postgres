@@ -50,16 +50,16 @@ const MarkDownToUp = function () {
         [':sleeping:', '😴'],
     ];
 
-    const convert = function (string) {
+    const convert = function (string, plain) {
         string = string.replace(/&/g, '&amp;');
         string = string.replace(/</g, '&lt;');
         string = string.replace(/>/g, '&gt;');
         const checkType = function (string) {
             const key = string.split(' ').length > 1 ? (string.split(' ')[0] || '') : '';
             if (string.substr(0, 5) === '*****') {
-                string = `<br />`;
+                string = plain ? `` : `<br />`;
             } else if (string.substr(0, 5) === '-----') {
-                string = `<hr />`;
+                string = plain ? `` : `<hr />`;
             } else if (key === '###') {
                 string = `<h5>${checkInline(string.substring(3))}</h5>`;
             } else if (key === '##') {
@@ -217,7 +217,10 @@ const MarkDownToUp = function () {
                 } else if (['png', 'jpeg', 'jpg', 'gif'].includes(type)) {
                     newTag = `<img style="display:block;margin:auto;" src="${pulledLink}" alt="${pulledText}" />`;
                 } else {
-                    newTag = `<a href="${pulledLink}" target="_blank" rel="noopener noreferrer">${pulledText}</a>`;
+                    if (plain)
+                        newTag = `<span>${pulledText}</span>`;
+                    else
+                        newTag = `<a href="${pulledLink}" target="_blank" rel="noopener noreferrer">${pulledText}</a>`;
                 }
 
                 const hLength = newTag.length;

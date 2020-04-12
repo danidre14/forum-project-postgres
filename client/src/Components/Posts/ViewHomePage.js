@@ -4,8 +4,6 @@ import ErrorsBox from "../Utils/ErrorsBox";
 
 import Head from "../Utils/Head";
 
-import DivLink from "../Utils/DivLink";
-
 import Post from "./Post";
 import LoadingAnim from "../LoadingAnim";
 import TryCatch from "../Utils/TryCatch";
@@ -13,7 +11,7 @@ import TryCatch from "../Utils/TryCatch";
 import { Link } from "react-router-dom";
 import { Breadcrumb } from "react-bootstrap";
 
-function PostView() {
+function ViewHomePage() {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [Error, setError] = ErrorsBox(false);
@@ -21,7 +19,7 @@ function PostView() {
     useEffect(() => {
         const { request, cancel } = makeRequest();
         function getData() {
-            request(["/api/v1/posts", "get"], {}, (data) => {
+            request(["/api/v1/posts/homepage", "get"], {}, (data) => {
                 setPosts(data);
                 setIsLoading(false);
             }, (message) => {
@@ -34,19 +32,17 @@ function PostView() {
 
     const Posts = isLoading ? <LoadingAnim value="Posts" /> : posts.map(post =>
         <TryCatch key={post.id}>
-            <Post classNames={`no-border shadow-sm`} post={post} canView={true} collapseBig={true} link={`/posts/view/${post.id}`} />
+            <Post classNames={`no-border shadow-sm`} post={post} canView={true} link={`/posts/view/${post.id}`} />
         </TryCatch>
     );
     return (
         <>
-            <Head page={{ title: "Browse", description: "Browse posts on Dani Smorum." }} />
+            <Head page={{ title: "Browse", description: "Welcome to Dani Smorum." }} />
             <Breadcrumb>
+                <Breadcrumb.Item active>Home</Breadcrumb.Item>
                 <li className="breadcrumb-item">
-                    <Link to="/" className="text-info">
-                        Home
-                    </Link>
+                    <Link to="/posts/view/" className="text-info">Posts</Link>
                 </li>
-                <Breadcrumb.Item active>Posts</Breadcrumb.Item>
             </Breadcrumb>
             <Error />
             {Posts}
@@ -54,4 +50,4 @@ function PostView() {
     )
 }
 
-export default PostView;
+export default ViewHomePage;

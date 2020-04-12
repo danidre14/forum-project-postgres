@@ -9,7 +9,8 @@ class ScrollToTopButton extends React.Component {
 
     this.state = {
       intervalId: 0,
-      hasScrolled: false
+      hasScrolled: false,
+      canScrollToTop: true,
     };
   }
 
@@ -22,28 +23,33 @@ class ScrollToTopButton extends React.Component {
       window.pageYOffset > (this.props.depth || 500) &&
       !this.state.hasScrolled
     ) {
-      this.setState({ ...this.state, hasScrolled: true });
+      this.setState({ hasScrolled: true });
     } else if (
       window.pageYOffset < (this.props.depth || 500) &&
       this.state.hasScrolled
     ) {
-      this.setState({ ...this.state, hasScrolled: false });
+      this.setState({ hasScrolled: false });
     }
   }
 
   scrollStep() {
     if (window.pageYOffset === 0) {
+      this.setState({ canScrollToTop: true });
       clearInterval(this.state.intervalId);
     }
     window.scroll(0, window.pageYOffset - (this.props.step || 150));
   }
 
   scrollToTop() {
+    if (!this.state.canScrollToTop) return;
     let intervalId = setInterval(
       this.scrollStep.bind(this),
       this.props.delay || 16.66
     );
-    this.setState({ ...this.state, intervalId: intervalId });
+    this.setState({
+      intervalId: intervalId,
+      canScrollToTop: false,
+    });
   }
 
   render() {

@@ -12,6 +12,8 @@ import Head from "./Components/Utils/Head";
 import ControlRoute from "./Components/ControlRoute";
 import MiddleWare from "./Components/MiddleWare";
 
+import HomePage from "./Components/Posts/ViewHomePage";
+
 import PostsView from "./Components/Posts/ViewPosts";
 import PostsViewOne from "./Components/Posts/ViewOne";
 import PostsCreate from "./Components/Posts/Create";
@@ -29,8 +31,12 @@ import NotificationBox from "./Components/Utils/NotificationsBox";
 import ScrollToTopButton from "./Components/Utils/ScrollToTop";
 import Footer from "./Components/Footer";
 
-function RedirectHomePage() {
+function RedirectPostView() {
     return <Redirect to='/posts/view' />
+}
+
+function RedirectHomePage() {
+    return <Redirect to='/' />
 }
 
 function App() {
@@ -47,7 +53,8 @@ function App() {
 
     return (
         <>
-        <Head page={{ title: "", description: `Dani-Smorum is a small forum created by Danidre.
+            <Head page={{
+                title: "", description: `Dani-Smorum is a small forum created by Danidre.
 Create an account today, post your blog, comment on others', and share your knowledge, using a custom designed markdown!` }} />
             <Router>
                 <div className="body">
@@ -69,7 +76,9 @@ Create an account today, post your blog, comment on others', and share your know
                                         <ControlRoute key={6} path="/posts/edit/:id" component={PostsEdit} />
                                         <Route path="/posts/view/:id" component={PostsViewOne} />
                                         <Route path="/posts/view" component={PostsView} />
-                                        <Route path="/" component={RedirectHomePage} />
+                                        <Route path="/posts" component={RedirectPostView} />
+                                        <Route path="/" component={HomePage} />
+                                        <Route component={RedirectHomePage} />
                                     </Switch>
                                     <TryCatch>
                                         <NotifBox />

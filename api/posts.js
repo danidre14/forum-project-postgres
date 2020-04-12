@@ -23,6 +23,12 @@ router.get("/create", (req, res) => {
     res.json({ hardReroute: "/" });
 });
 
+router.get("/homepage", async (req, res) => {
+    const posts = await Posts.getHompage();
+
+    res.json(posts);
+});
+
 router.get("/view/:id", async (req, res) => {
     const id = req.params.id;
     if (!Validator.isNumber(id)) return res.status(500).json(statusMessage("Invalid ID", statusCodes.ERROR, 500));
