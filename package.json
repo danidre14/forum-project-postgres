@@ -33,7 +33,7 @@
   "homepage": "https://github.com/danidre14/forum-project-postgres#readme",
   "dependencies": {
     "@sendgrid/mail": "^6.5.5",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.1",
     "concurrently": "^5.1.0",
     "express": "^4.17.1",
     "express-rate-limit": "^5.1.1",

@@ -44,7 +44,7 @@ function PostCreate(props) {
     }, []);
 
     useEffect(() => {
-        if (!sentPost&&(title !== "" || body !== "")) {
+        if (!sentPost && (title !== "" || body !== "")) {
             window.onbeforeunload = () => true;
         } else {
             window.onbeforeunload = undefined;
@@ -84,9 +84,9 @@ function PostCreate(props) {
 
     return (
         <>
-        <Head page={{ title: "Create Post", description: "Create a post on Dani-Smorum." }} />
+            <Head page={{ title: "Create Post", description: "Create a post on Dani-Smorum." }} />
             <Prompt
-                when={!sentPost&&(title !== "" || body !== "")}
+                when={!sentPost && (title !== "" || body !== "")}
                 message='You have unsaved changes, are you sure you want to leave this page?'
             />
             <Breadcrumb>
